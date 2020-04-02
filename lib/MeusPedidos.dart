@@ -1,28 +1,23 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:controle_lote/AtualizarTerreno.dart';
-import 'package:controle_lote/model/Usuario.dart';
+import 'package:tintex/AtualizarTerreno.dart';
+import 'package:tintex/model/Usuario.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:scoped_model/scoped_model.dart';
+import 'model/Pedido.dart';
+import 'DetalharPedido.dart';
 
-import 'PrimeiraPagina.dart';
-import 'helper/TerrenoHelper.dart';
-import 'model/Terreno.dart';
-import 'TerceiraPagina.dart';
-
-class SegundaPagina extends StatefulWidget {
+class MeusPedidos extends StatefulWidget {
   @override
-  _SegundaPaginaState createState() => _SegundaPaginaState();
+  _MeusPedidosState createState() => _MeusPedidosState();
 }
 
-class _SegundaPaginaState extends State<SegundaPagina> {
+class _MeusPedidosState extends State<MeusPedidos> {
   Usuario usuario = new Usuario();
-  List<Terreno> _terrenos = List();
+  List<Pedido> _terrenos = List();
   final _controller = StreamController<QuerySnapshot>.broadcast();
   Firestore db = Firestore.instance;
   Future<String> idUsuario;
@@ -78,6 +73,9 @@ class _SegundaPaginaState extends State<SegundaPagina> {
   }
 
   @override
+  Widget build(BuildContext context) {}
+/*
+  @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: _controller.stream,
@@ -130,7 +128,7 @@ class _SegundaPaginaState extends State<SegundaPagina> {
                         String apresentarRegistro             = item['apresentarRegistro'];
                         String idTerreno                      = item.documentID;
 
-                        Terreno terreno = new Terreno(
+                        Pedido terreno = new Pedido(
                             cidade,
                             descricao,
                             titulo,
@@ -149,9 +147,9 @@ class _SegundaPaginaState extends State<SegundaPagina> {
                                   builder: (context) =>
                                       TerceiraPagina(terreno)));
                             },
-                            title: Text(terreno.titulo),
+                            title: Text(terreno.massa_Acrilica),
                             subtitle: Text(
-                                '${(terreno.vlParcela)} - ${terreno.descricao}'),
+                                '${(terreno.grafiato_Acrilico)} - ${terreno.massa_PVA}'),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
@@ -240,15 +238,15 @@ class _SegundaPaginaState extends State<SegundaPagina> {
     String dataUltimaParcela      = "";
     String dataDiaDoPagamento     = "";
     String apresentarRegistro     = "";
-    Terreno terreno = new Terreno(cidade, descricao,titulo, vlParcela, vlTotal,
+    Pedido terreno = new Pedido(cidade, descricao,titulo, vlParcela, vlTotal,
         vlEntrada, dataPrimeiraParcela, dataUltimaParcela, dataDiaDoPagamento, apresentarRegistro);
 
-    terreno.excluirTerreno(idUsuarioLogado, idTerreno);
+    terreno.excluirPedido(idUsuarioLogado, idTerreno);
 
 
   }
 
-  void _atualizarTerreno({Terreno terreno}) {
+  void _atualizarTerreno({Pedido terreno}) {
 
     String titulo                 = "";
     String cidade                 = "";
@@ -260,9 +258,13 @@ class _SegundaPaginaState extends State<SegundaPagina> {
     String dataUltimaParcela      = "";
     String dataDiaDoPagamento     = "";
     String apresentarRegistro     = "";
-    Terreno terreno = new Terreno(cidade, descricao,titulo, vlParcela, vlTotal,
+    Pedido terreno = new Pedido(cidade, descricao,titulo, vlParcela, vlTotal,
         vlEntrada, dataPrimeiraParcela, dataUltimaParcela, dataDiaDoPagamento, apresentarRegistro);
 
   //  terreno.excluirTerreno(idUsuarioLogado, idTerreno);
   }
+
+
+
+ */
 }

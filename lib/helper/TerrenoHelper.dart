@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:controle_lote/model/Terreno.dart';
+import 'package:tintex/model/Pedido.dart';
 
 class TerrenoHelper {
   static final String nomeTabela                = 'terrenos';
@@ -58,7 +58,7 @@ class TerrenoHelper {
     return db;
   }
 
-  Future<int> salvarTerreno(Terreno terreno) async {
+  Future<int> salvarTerreno(Pedido terreno) async {
     var bancoDados = await db;
     int resultado = await bancoDados.insert(nomeTabela, terreno.toMap());
     return resultado;
@@ -72,7 +72,7 @@ class TerrenoHelper {
     return terrenos;
   }
 
-  Future<int> atualizarTerreno(Terreno terreno)async{
+  Future<int> atualizarTerreno(Pedido terreno)async{
 
     var bancoDados = await db;
     await bancoDados.update(

@@ -1,8 +1,8 @@
 import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:controle_lote/model/Terreno.dart';
-import 'package:controle_lote/model/Usuario.dart';
+import 'package:tintex/model/Pedido.dart';
+import 'package:tintex/model/Usuario.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
@@ -10,7 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:intl/number_symbols_data.dart';
 
 class AtualizarTerreno extends StatefulWidget {
-  final Terreno terreno;
+  final Pedido terreno;
   final String idTerreno;
   final String idUsuarioLogado;
 
@@ -23,7 +23,7 @@ class AtualizarTerreno extends StatefulWidget {
 }
 
 class _AtualizarTerrenoState extends State<AtualizarTerreno> {
-  final Terreno terreno;
+  final Pedido terreno;
   String idTerreno;
   String idUsuarioLogado;
   Firestore db = Firestore.instance;
@@ -45,15 +45,13 @@ class _AtualizarTerrenoState extends State<AtualizarTerreno> {
 
   void _carregarCampos(){
 
-    _tituloController.text              = terreno.titulo;
-    _cidadeController.text              = terreno.cidade;
-    _descricaoController.text           = terreno.descricao;
-    _vlTotalTerrenoController.text      = currencyConverse(terreno.vlTotal);
-    _vlEntradaTerrenoController.text    = currencyConverse(terreno.vlEntrada);
-    _vlParcelaTerrenoController.text    = currencyConverse(terreno.vlParcela);
-    _dataPrimeiraParcelaController.text = terreno.dataPrimeiraParcela;
-    _dataUltimaParcelaController.text   = terreno.dataUltimaParcela;
-    _dataDiaDoPagamentoController.text  = terreno.dataDiaDoPagamento;
+    _tituloController.text              = terreno.massa_Acrilica;
+    _cidadeController.text              = terreno.selador_Acrilico;
+    _descricaoController.text           = terreno.massa_PVA;
+    _vlTotalTerrenoController.text      = currencyConverse(terreno.textura_Acrilica);
+    _vlEntradaTerrenoController.text    = currencyConverse(terreno.latex_Economico);
+    _vlParcelaTerrenoController.text    = currencyConverse(terreno.grafiato_Acrilico);
+
 
   }
 
@@ -227,7 +225,7 @@ class _AtualizarTerrenoState extends State<AtualizarTerreno> {
                           ),
                         ),
                         onPressed: (){
-                          _atualizarTerreno(this.idTerreno, this.idUsuarioLogado);
+                          //_atualizarTerreno(this.idTerreno, this.idUsuarioLogado);
 
                         },
                       ),
@@ -242,7 +240,7 @@ class _AtualizarTerrenoState extends State<AtualizarTerreno> {
     );
   }
 
-
+/********************MOMENTANEAMENTE ENQUANTO REFATORO TODOS OS NOMES PARA PEDIDO***********************************
   void _atualizarTerreno(String idTerreno, String idUsuarioLogado) {
     String titulo                 = _tituloController.text;
     String cidade                 = _cidadeController.text;
@@ -257,9 +255,11 @@ class _AtualizarTerrenoState extends State<AtualizarTerreno> {
 //    String idUsuarioLogado        = uid;
 
     //criando objeto Terreno
-    Terreno terreno               =  Terreno(cidade, descricao,titulo, vlParcela, vlTotal, vlEntrada, dataPrimeiraParcela, dataUltimaParcela, dataDiaDoPagamento, apresentarRegistro);
+    Pedido pedido               =  Pedido(Massa_Acrilica, Selador_Acrilico,Massa_PVA, Textura_Acrilica, Latex_Economico, Grafiato_Acrilico, apresentarRegistro);
 
-    terreno.alterarTerreno(terreno, idUsuarioLogado, idTerreno);
+    terreno.alterarPedido(terreno, idUsuarioLogado, idTerreno);
 
   }
+
+ */
 }

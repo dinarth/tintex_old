@@ -1,15 +1,15 @@
 import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:controle_lote/SegundaPagina.dart';
-import 'package:controle_lote/model/Terreno.dart';
+import 'package:tintex/MeusPedidos.dart';
+import 'package:tintex/model/Pedido.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 
 class TerceiraPagina extends StatefulWidget {
-  final Terreno terreno;
+  final Pedido terreno;
 
   TerceiraPagina(this.terreno);
 
@@ -18,7 +18,7 @@ class TerceiraPagina extends StatefulWidget {
 }
 
 class _TerceiraPaginaState extends State<TerceiraPagina> {
-  final Terreno terreno;
+  final Pedido terreno;
   Firestore db = Firestore.instance;
   String idUsuarioLogado = 'LniQVMDb1bRvDVetHaHt5c5VhiB2';
   //String terreno                = '003';
@@ -80,7 +80,7 @@ class _TerceiraPaginaState extends State<TerceiraPagina> {
       debugPrint('Notification payload: $payload');
     }
     await Navigator.push(context,
-    new MaterialPageRoute(builder: (context) => new SegundaPagina()));
+    new MaterialPageRoute(builder: (context) => new MeusPedidos()));
   }
 
 
@@ -97,7 +97,7 @@ class _TerceiraPaginaState extends State<TerceiraPagina> {
             onPressed: () async{
           Navigator.of(context, rootNavigator:true).pop();
           await Navigator.push(context,
-           MaterialPageRoute(builder: (context)=>SegundaPagina()));
+           MaterialPageRoute(builder: (context)=>MeusPedidos()));
             },
           )
         ],
@@ -130,7 +130,7 @@ class _TerceiraPaginaState extends State<TerceiraPagina> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text("Título:"),
-                        Text("${terreno.titulo}")
+                        Text("${terreno.massa_Acrilica}")
                       ],
                     ),
                     Divider(),
@@ -138,7 +138,7 @@ class _TerceiraPaginaState extends State<TerceiraPagina> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text("Cidade: "),
-                        Text("${terreno.cidade}")
+                        Text("${terreno.selador_Acrilico}")
                       ],
                     ),
                     Divider(),
@@ -146,7 +146,7 @@ class _TerceiraPaginaState extends State<TerceiraPagina> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text("Valor da Parcela: "),
-                        Text("${terreno.vlParcela}")
+                        Text("${terreno.grafiato_Acrilico}")
                       ],
                     ),
                     Divider(),
@@ -154,7 +154,7 @@ class _TerceiraPaginaState extends State<TerceiraPagina> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text("Valor Total: "),
-                        Text("${terreno.vlTotal}")
+                        Text("${terreno.textura_Acrilica}")
                       ],
                     ),
                     Divider(),
@@ -162,33 +162,10 @@ class _TerceiraPaginaState extends State<TerceiraPagina> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text("Valor da Entrada: "),
-                        Text("${terreno.vlEntrada}")
+                        Text("${terreno.latex_Economico}")
                       ],
                     ),
-                    Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text("Data da Primeira Parcela: "),
-                        Text("${terreno.dataPrimeiraParcela}")
-                      ],
-                    ),
-                    Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text("Data da Última Parcela: "),
-                        Text("${terreno.dataUltimaParcela}")
-                      ],
-                    ),
-                    Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text("Dia do Pagamento: "),
-                        Text("${terreno.dataDiaDoPagamento}")
-                      ],
-                    ),
+
                     Divider(),
                     RaisedButton(
                       child: Text('notificação'),

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.dinarth.controle_lote">
+    package="com.dinarth.tintex">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -11,7 +11,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="controle_lote"
+        android:label="tintex"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

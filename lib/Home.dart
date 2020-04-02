@@ -1,13 +1,13 @@
-import 'package:controle_lote/login_screen.dart';
-import 'package:controle_lote/model/Usuario.dart';
-import 'package:controle_lote/widget/custom_drawer.dart';
+import 'package:tintex/login_screen.dart';
+import 'package:tintex/model/Usuario.dart';
+import 'package:tintex/widget/custom_drawer.dart';
 import 'package:flutter/material.dart';
-import 'package:controle_lote/PrimeiraPagina.dart';
-import 'package:controle_lote/SegundaPagina.dart';
+import 'package:tintex/RealizarPedido.dart';
+import 'package:tintex/MeusPedidos.dart';
 
 import 'package:scoped_model/scoped_model.dart';
 
-import 'model/Terreno.dart';
+import 'model/Pedido.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -49,25 +49,25 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         return PageView(
           controller: _pageController,
           children: <Widget>[
-            Scaffold(
+            /*Scaffold(
 
               appBar: AppBar(
               centerTitle: true,
               title: Text(titulo),
               ),
-              body: SegundaPagina(),
+              body: MeusPedidos(),
               drawer: CustomDrawer(_pageController),
               floatingActionButton: FloatingActionButton(
               onPressed: _sair,
               ),
-            ),
+            ),*/
             Scaffold(
               appBar: AppBar(
                 title: Text(titulo),
                 centerTitle: true,
               ),
               drawer: CustomDrawer(_pageController),
-              body:PrimeiraPagina(),
+              body:RealizarPedido(),
             ),
         ],
         );

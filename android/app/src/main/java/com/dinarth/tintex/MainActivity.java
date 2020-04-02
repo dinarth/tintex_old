@@ -1,4 +1,4 @@
-package com.dinarth.controle_lote;
+package com.dinarth.tintex;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

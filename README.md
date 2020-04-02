@@ -1,4 +1,4 @@
-# controle_lote
+# tintex
 
 Projeto para controlar os lotes adquiridos.
 

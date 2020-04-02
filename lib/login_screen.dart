@@ -1,6 +1,6 @@
-import 'package:controle_lote/Home.dart';
-import 'package:controle_lote/model/Usuario.dart';
-import 'package:controle_lote/signup_screen.dart';
+import 'package:tintex/Home.dart';
+import 'package:tintex/model/Usuario.dart';
+import 'package:tintex/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 

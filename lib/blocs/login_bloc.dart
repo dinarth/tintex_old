@@ -1,5 +1,5 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
-import 'package:controle_lote/validators/login_validators.dart';
+import 'package:tintex/validators/login_validators.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LoginBloc extends BlocBase with LoginValidators{

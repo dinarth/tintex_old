@@ -1,11 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart' as prefix0;
-import 'package:controle_lote/login_screen.dart';
-import 'package:controle_lote/model/Usuario.dart';
-import 'package:controle_lote/signup_screen.dart';
+import 'package:tintex/login_screen.dart';
+import 'package:tintex/model/Usuario.dart';
 import 'package:flutter/material.dart';
-import 'package:controle_lote/Home.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tintex/Home.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 void main() => runApp(new MyApp());
@@ -22,15 +18,20 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
+
 /*
-void main() async{
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
+void main(){
+  WidgetsFlutterBinding.ensureInitialized();
+  Firestore.instance.collection("produtos")
+      .document("tipo")
+      .setData({'pvc': '80', "lata tinta": "340"});
 
-
-  runApp(MaterialApp(
-      home: LoginScreen(),
-    )//MaterialApp
-  );
+  runApp(App());
+      
 }
 
 class App extends StatelessWidget {
@@ -39,6 +40,4 @@ class App extends StatelessWidget {
     return Container();
   }
 }
-
-
- */
+*/

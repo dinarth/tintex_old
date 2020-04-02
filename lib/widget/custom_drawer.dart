@@ -1,7 +1,7 @@
-import 'package:controle_lote/SegundaPagina.dart';
-import 'package:controle_lote/login_screen.dart';
-import 'package:controle_lote/model/Usuario.dart';
-import 'package:controle_lote/tiles/drawer_tile.dart';
+import 'package:tintex/MeusPedidos.dart';
+import 'package:tintex/login_screen.dart';
+import 'package:tintex/model/Usuario.dart';
+import 'package:tintex/tiles/drawer_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
