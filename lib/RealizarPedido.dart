@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tintex/ConfirmarPedido.dart';
 import 'package:tintex/model/Pedido.dart';
 import 'package:tintex/model/Usuario.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,6 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:scoped_model/scoped_model.dart';
-
 
 import 'model/Pedido.dart';
 
@@ -17,23 +17,25 @@ class RealizarPedido extends StatefulWidget {
 }
 
 class _RealizarPedidoState extends State<RealizarPedido> {
-  TextEditingController _Massa_PVA                     = TextEditingController();
-  TextEditingController _Massa_Acrilica                = TextEditingController();
-  TextEditingController _Selador_Acrilico              = TextEditingController();
-  TextEditingController _Latex_Economico               = TextEditingController();
-  TextEditingController _Grafiato_Acrilico             = TextEditingController();
-  TextEditingController _Textura_Acrilica              = TextEditingController();
+  TextEditingController _Massa_PVA = TextEditingController();
+  TextEditingController _Massa_Acrilica = TextEditingController();
+  TextEditingController _Selador_Acrilico = TextEditingController();
+  TextEditingController _Latex_Economico = TextEditingController();
+  TextEditingController _Grafiato_Acrilico = TextEditingController();
+  TextEditingController _Textura_Acrilica = TextEditingController();
+  final double _widthTextField                   = 55;
+  final double _heightTextField                  = 30;
+  RealizarPedido realizarPedido = new RealizarPedido();
+  Usuario  usuario              = new Usuario();
+  String _Acao        = 'I'; // I significa Incluir novo registro
 
-  Usuario usuario = new Usuario();
+
 
   int anoAtual = DateTime.now().year;
   String _textoResultado = "";
 
-
-
-
-  String currencyConverse(String valorMoeda){
-    if (valorMoeda.length >4){
+  String currencyConverse(String valorMoeda) {
+    if (valorMoeda.length > 4) {
       valorMoeda = valorMoeda.replaceAll('.', '');
     }
     valorMoeda = valorMoeda.replaceAll(',', '.');
@@ -44,160 +46,346 @@ class _RealizarPedidoState extends State<RealizarPedido> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-
-      body:ScopedModelDescendant<Usuario>(
-        builder: (context, child, model){
-      return Container(
-
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(32),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-
-            children: <Widget>[
-
-
-              Padding(
-                padding: EdgeInsets.only(bottom: 10),
-                child: Text("Cadastrar Terreno",
-                  style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold
-                  ),
-
+    return Scaffold(body: ScopedModelDescendant<Usuario>(
+      builder: (context, child, model) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Row(
+              //ROW 1
+              children: [
+                Container(
+                  child: Text("QTD"),
                 ),
-              ),
-
-              TextField(
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                    labelText: "Título"
+                Container(
+                  child: Text("Descriminação"),
                 ),
-                style: TextStyle(
-                    fontSize: 22
+                Container(
+                  child: Text("Vl Unitário"),
                 ),
-                controller: _Massa_PVA,
-              ),
-              TextField(
-                keyboardType: TextInputType.text,
-
-                decoration: InputDecoration(
-                    labelText: "Cidade"
+                Container(
+                  child: Text("Total"),
                 ),
-                style: TextStyle(
-                    fontSize: 22
-                ),
-                controller: _Massa_Acrilica,
-              ),
-
-              TextField(
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                    labelText: "Valor total do terreno, ex: 80.000,00"
-                ),
-                style: TextStyle(
-                    fontSize: 22
-                ),
-                controller: _Latex_Economico,
-              ),
-              TextField(
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                    labelText: "Valor da entrada, ex: 5.000,00"
-                ),
-                style: TextStyle(
-                    fontSize: 22
-                ),
-                controller: _Grafiato_Acrilico,
-              ),
-              TextField(
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                    labelText: "Valor da parcela, ex: 500,00"
-                ),
-                style: TextStyle(
-                    fontSize: 22
-                ),
-                controller: _Textura_Acrilica,
-              ),
-
-
-              Padding(
-                padding: EdgeInsets.only(top: 10),
-                child: RaisedButton(
-                  color: Colors.blue,
-                  textColor: Colors.white,
-                  padding: EdgeInsets.all(15),
-                  child: Text(
-                    "Cadastrar",
-                    style: TextStyle(
-                        fontSize: 20
+              ],
+            ),
+            Row(//ROW 2
+                children: [
+                  new Container(
+                    width: _widthTextField,
+                    height: _heightTextField,
+                    decoration: new BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      border: new Border.all(
+                        color: Colors.black,
+                        width: 1.0,
+                      ),
+                    ),
+                    child: new TextField(
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      decoration: new InputDecoration(
+                        labelText: '0',
+                        border: InputBorder.none,
+                      ),
+                      controller: _Massa_PVA,
                     ),
                   ),
-                  onPressed: (){
-                    _validarCampos(model.firebaseUser.uid.toString());
-                  },
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top:20),
+
+                  Container(
+                    child: Text("Massa PVA saco 15kg"),
+                  ),
+                  Container(
+                    child: Text("R\$15,90"),
+                  ),
+                  Container(
+                    child: Text("R\$15,90"),
+                  ),
+                ]),
+            Row(//ROW 2
+                children: [
+                  new Container(
+                    width: _widthTextField,
+                    height: _heightTextField,
+                    decoration: new BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      border: new Border.all(
+                        color: Colors.black,
+                        width: 1.0,
+                      ),
+                    ),
+                    child: new TextField(
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      decoration: new InputDecoration(
+                        labelText: '0',
+                        border: InputBorder.none,
+                      ),
+                      controller: _Massa_Acrilica,
+                    ),
+                  ),
+
+                  Container(
+                    child: Text("Massa Acrilica"),
+                  ),
+                  Container(
+                    child: Text("R\$15,90"),
+                  ),
+                  Container(
+                    child: Text("R\$15,90"),
+                  ),
+                ]),
+            Row(//ROW 2
+                children: [
+                  new Container(
+                    width: _widthTextField,
+                    height: _heightTextField,
+                    decoration: new BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      border: new Border.all(
+                        color: Colors.black,
+                        width: 1.0,
+                      ),
+                    ),
+                    child: new TextField(
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      decoration: new InputDecoration(
+                        labelText: '0',
+                        border: InputBorder.none,
+                      ),
+                      controller: _Selador_Acrilico,
+                    ),
+                  ),
+
+                  Container(
+                    child: Text("Latex Economico"),
+                  ),
+                  Container(
+                    child: Text("R\$15,90"),
+                  ),
+                  Container(
+                    child: Text("R\$15,90"),
+                  ),
+                ]),
+            Row(//ROW 2
+                children: [
+                  new Container(
+                    width: _widthTextField,
+                    height: _heightTextField,
+                    decoration: new BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      border: new Border.all(
+                        color: Colors.black,
+                        width: 1.0,
+                      ),
+                    ),
+                    child: new TextField(
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      decoration: new InputDecoration(
+                        labelText: '0',
+                        border: InputBorder.none,
+                      ),
+                      controller: _Latex_Economico,
+                    ),
+                  ),
+
+                  Container(
+                    child: Text("Grafiato Acrilico"),
+                  ),
+                  Container(
+                    child: Text("R\$15,90"),
+                  ),
+                  Container(
+                    child: Text("R\$15,90"),
+                  ),
+                ]),
+            Row(//ROW 2
+                children: [
+                  new Container(
+                    width: _widthTextField,
+                    height: _heightTextField,
+                    decoration: new BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      border: new Border.all(
+                        color: Colors.black,
+                        width: 1.0,
+                      ),
+                    ),
+                    child: new TextField(
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      decoration: new InputDecoration(
+                        labelText: '0',
+                        border: InputBorder.none,
+                      ),
+                      controller: _Grafiato_Acrilico,
+                    ),
+                  ),
+
+                  Container(
+                    child: Text(" Grafiato Acrilico"),
+                  ),
+                  Container(
+                    child: Text("R\$15,90"),
+                  ),
+                  Container(
+                    child: Text("R\$15,90"),
+                  ),
+                ]),
+            Row(//ROW 2
+                children: [
+                  new Container(
+                    width: _widthTextField,
+                    height: _heightTextField,
+                    decoration: new BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      border: new Border.all(
+                        color: Colors.black,
+                        width: 1.0,
+                      ),
+                    ),
+                    child: new TextField(
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      decoration: new InputDecoration(
+                        labelText: '0',
+                        border: InputBorder.none,
+                      ),
+                      controller: _Textura_Acrilica,
+                    ),
+                  ),
+
+                  Container(
+                    child: Text("Textura Acrilica"),
+                  ),
+                  Container(
+                    child: Text("R\$15,90"),
+                  ),
+                  Container(
+                    child: Text("R\$15,90"),
+                  ),
+                ]),
+
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: RaisedButton(
+                color: Colors.blue,
+                textColor: Colors.white,
+                padding: EdgeInsets.all(15),
                 child: Text(
-                  _textoResultado,
+                  "Cadastrar",
                   style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold
+                      fontSize: 20
                   ),
                 ),
-              )
-            ],
+                onPressed: (){
+                  _confirmarPedido(model.firebaseUser.uid.toString());
+                 // _validarCampos(model.firebaseUser.uid.toString());
+                },
+              ),
+            ),
+          ],
 
-          ),
-        ),
-      );
-          },
-      )
-    );
+
+        );
+      },
+    ));
   }
 
 // DateFormat(String s) {}
 
-
   _validarCampos(String idUsuarioLogado) {
-    String Massa_PVA                 = _Massa_PVA.text;
-    String Massa_Acrilica            = _Massa_Acrilica.text;
-    String Selador_Acrilico          = _Selador_Acrilico.text;
-    String Latex_Economico           = _Latex_Economico.text;
-    String Grafiato_Acrilico         = _Grafiato_Acrilico.text;
-    String Textura_Acrilica          = _Textura_Acrilica.text;
-    String apresentarRegistro        = '1';
+    String Massa_PVA          = _Massa_PVA.text;
+    String Massa_Acrilica     = _Massa_Acrilica.text;
+    String Selador_Acrilico   = _Selador_Acrilico.text;
+    String Latex_Economico    = _Latex_Economico.text;
+    String Grafiato_Acrilico  = _Grafiato_Acrilico.text;
+    String Textura_Acrilica   = _Textura_Acrilica.text;
+    String Acao               = _Acao;
+    String apresentarRegistro = '1';
 //    String idUsuarioLogado        = uid;
 
     //criando objeto Terreno
-    Pedido pedido               =  Pedido(Massa_Acrilica, Selador_Acrilico,Massa_PVA, Textura_Acrilica, Latex_Economico, Grafiato_Acrilico, apresentarRegistro);
+    Pedido pedido = Pedido(
+        Massa_Acrilica,
+        Selador_Acrilico,
+        Massa_PVA,
+        Textura_Acrilica,
+        Latex_Economico,
+        Grafiato_Acrilico,
+        apresentarRegistro);
 
     pedido.cadastrarPedido(pedido, idUsuarioLogado);
 
-    _Massa_PVA.text           = "0";
-    _Massa_Acrilica.text      = "0";
-    _Selador_Acrilico.text    = "0";
-    _Latex_Economico.text     = "0";
-    _Grafiato_Acrilico.text   = "0";
-    _Textura_Acrilica.text    = "0";
-
+    _Massa_PVA.text = "0";
+    _Massa_Acrilica.text = "0";
+    _Selador_Acrilico.text = "0";
+    _Latex_Economico.text = "0";
+    _Grafiato_Acrilico.text = "0";
+    _Textura_Acrilica.text = "0";
   }
 
-  _cadastrarTerreno( Pedido pedido){
-    //Salvar terreno
-    Firestore db = Firestore.instance;
 
-    db.collection("pedidos")
-        .document("LniQVMDb1bRvDVetHaHt5c5VhiB2")
-        .collection("pedidos")
-        .document()
-        .setData(pedido.toMap());
+  void _confirmarPedido(idUsuario) {
+    String Massa_PVA          = _Massa_PVA.text;
+    String Massa_Acrilica     = _Massa_Acrilica.text;
+    String Selador_Acrilico   = _Selador_Acrilico.text;
+    String Latex_Economico    = _Latex_Economico.text;
+    String Grafiato_Acrilico  = _Grafiato_Acrilico.text;
+    String Textura_Acrilica   = _Textura_Acrilica.text;
+    String apresentarRegistro = '1';
+
+    Pedido pedido = new Pedido(
+        Massa_Acrilica,
+        Selador_Acrilico,
+        Massa_PVA,
+        Textura_Acrilica,
+        Latex_Economico,
+        Grafiato_Acrilico,
+        apresentarRegistro );
 
 
+    Navigator.of(context).push(MaterialPageRoute(
+
+        builder: (context) =>
+            ConfirmarPedido(pedido, idUsuario)));
+  }
+
+  TextEditingController get Massa_Acrilica => _Massa_Acrilica;
+
+  set Massa_Acrilica(TextEditingController value) {
+    _Massa_Acrilica = value;
+  }
+
+  TextEditingController get Selador_Acrilico => _Selador_Acrilico;
+
+  set Selador_Acrilico(TextEditingController value) {
+    _Selador_Acrilico = value;
+  }
+
+  TextEditingController get Latex_Economico => _Latex_Economico;
+
+  set Latex_Economico(TextEditingController value) {
+    _Latex_Economico = value;
+  }
+
+  TextEditingController get Grafiato_Acrilico => _Grafiato_Acrilico;
+
+  set Grafiato_Acrilico(TextEditingController value) {
+    _Grafiato_Acrilico = value;
+  }
+
+  TextEditingController get Textura_Acrilica => _Textura_Acrilica;
+
+  set Textura_Acrilica(TextEditingController value) {
+    _Textura_Acrilica = value;
+  }
+
+  TextEditingController get Massa_PVA => _Massa_PVA;
+
+  set Massa_PVA(TextEditingController value) {
+    _Massa_PVA = value;
   }
 
 }

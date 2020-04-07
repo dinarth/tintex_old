@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tintex/AtualizarTerreno.dart';
 import 'package:tintex/model/Usuario.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'AtualizarPedido.dart';
 import 'model/Pedido.dart';
 import 'DetalharPedido.dart';
 
@@ -17,7 +17,7 @@ class MeusPedidos extends StatefulWidget {
 
 class _MeusPedidosState extends State<MeusPedidos> {
   Usuario usuario = new Usuario();
-  List<Pedido> _terrenos = List();
+  List<Pedido> _pedidos = List();
   final _controller = StreamController<QuerySnapshot>.broadcast();
   Firestore db = Firestore.instance;
   Future<String> idUsuario;
@@ -27,29 +27,11 @@ class _MeusPedidosState extends State<MeusPedidos> {
   FirebaseUser firebaseUser;
   FirebaseAuth _auth = FirebaseAuth.instance;
 
-
-
-
-
-  _formatarData(String data) {
-    initializeDateFormatting('pt_BR');
-
-    var formatador = DateFormat('d/M/y');
-
-    DateTime dataConvertida = DateTime.parse(data);
-    String dataFormatada = formatador.format(dataConvertida);
-
-    return dataFormatada;
-  }
-
-
-
-
-  Stream<QuerySnapshot> _recuperarListenerTerrenos() {
+  Stream<QuerySnapshot> _recuperarListenerPedidos() {
     final stream = db
-        .collection("terrenos")
+        .collection("pedidos")
         .document(idUsuarioLogado)
-        .collection("terreno")
+        .collection("pedido")
         .where("apresentarRegistro", isEqualTo: '1')
         .snapshots();
 
@@ -67,14 +49,14 @@ class _MeusPedidosState extends State<MeusPedidos> {
       print(id);
       this.idUsuarioLogado = id;
 
-      _recuperarListenerTerrenos();
+      _recuperarListenerPedidos();
     });
 
   }
 
-  @override
-  Widget build(BuildContext context) {}
-/*
+ // @override
+ // Widget build(BuildContext context) {}
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -86,7 +68,7 @@ class _MeusPedidosState extends State<MeusPedidos> {
             return Center(
               child: Column(
                 children: <Widget>[
-                  Text("Carregando terrenos"),
+                  Text("Carregando pedidos"),
                   CircularProgressIndicator()
                 ],
               ),
@@ -95,13 +77,13 @@ class _MeusPedidosState extends State<MeusPedidos> {
           case ConnectionState.active:
           case ConnectionState.done:
             if (snapshot.hasError) {
-              return Text("Erro ao carregar terrenos.");
+              return Text("Erro ao carregar pedidos.");
             } else {
               QuerySnapshot querySnapshot = snapshot.data;
               if (querySnapshot.documents.length == 0) {
                 return Center(
                   child: Text(
-                    "Você não possui terreno(s) cadastrado(s).",
+                    "Você não possui pedido(s) cadastrado(s).",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 );
@@ -110,46 +92,50 @@ class _MeusPedidosState extends State<MeusPedidos> {
               return  ListView.builder(
                       itemCount: querySnapshot.documents.length,
                       itemBuilder: (context, index) {
-                        List<DocumentSnapshot> terrenos =
+                        List<DocumentSnapshot> pedidos =
                             querySnapshot.documents.toList();
-                        DocumentSnapshot item = terrenos[index];
+                        DocumentSnapshot item = pedidos[index];
 
 
 
-                        String cidade                         = item['cidade'];
-                        String descricao                      = item['descricao'];
-                        String titulo                         = item['titulo'];
-                        String vlParcela                      = item['vlParcela'];
-                        String vlTotal                        = item['vlTotal'];
-                        String vlEntrada                      = item['vlEntrada'];
-                        String dataPrimeiraParcela            = item['dataPrimeiraParcela'];
-                        String dataUltimaParcela              = item['dataUltimaParcela'];
-                        String dataDiaDoPagamento             = item['dataDiaDoPagamento'];
-                        String apresentarRegistro             = item['apresentarRegistro'];
-                        String idTerreno                      = item.documentID;
+                        String Massa_PVA                    = item['massa_PVA'];
+                        String Massa_Acrilica               = item['massa_Acrilica'];
+                        String Selador_Acrilico             = item['selador_Acrilico'];
+                        String Latex_Economico              = item['latex_Economico'];
+                        String Grafiato_Acrilico            = item['grafiato_Acrilico'];
+                        String Textura_Acrilica             = item['textura_Acrilica'];
+                        String apresentarRegistro           = item['apresentarRegistro'];
+                        String dataPedido                   = item['data_Pedido'];
+                        String numeroPedido                 = item['numero_Pedido'];
+                        String idPedido                     = item.documentID;
 
-                        Pedido terreno = new Pedido(
-                            cidade,
-                            descricao,
-                            titulo,
-                            vlParcela,
-                            vlTotal,
-                            vlEntrada,
-                            dataPrimeiraParcela,
-                            dataUltimaParcela,
-                            dataDiaDoPagamento,
-                            apresentarRegistro);
+
+                        if(dataPedido == null || dataPedido.isEmpty){
+                          dataPedido      = "01/01/1900";
+                        }
+
+                        Pedido pedido = new Pedido(
+                            Massa_Acrilica,
+                            Selador_Acrilico,
+                            Massa_PVA,
+                            Textura_Acrilica,
+                            Latex_Economico,
+                            Grafiato_Acrilico,
+                            apresentarRegistro,
+                            numeroPedido,
+                            idPedido);
+
 
                         return  Card(
                           child: ListTile(
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) =>
-                                      TerceiraPagina(terreno)));
+                                      DetalharPedido(pedido)));
                             },
-                            title: Text(terreno.massa_Acrilica),
+                            title: Text("Pedido número ${numeroPedido} - " + "Data: " + dataPedido),
                             subtitle: Text(
-                                '${(terreno.grafiato_Acrilico)} - ${terreno.massa_PVA}'),
+                                '${(pedido.grafiato_Acrilico)} - ${pedido.massa_PVA}'),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
@@ -157,8 +143,8 @@ class _MeusPedidosState extends State<MeusPedidos> {
                                   onTap: () {
                                     Navigator.of(context).push(MaterialPageRoute(
                                         builder: (context) =>
-                                            AtualizarTerreno(terreno, idTerreno, idUsuarioLogado)));
-                                    //  _atualizarTerreno(terreno: terreno);
+                                            AtualizarPedido(pedido, idPedido, idUsuarioLogado)));
+
                                   },
                                   child: Padding(
                                     padding: EdgeInsets.only(right: 0),
@@ -170,7 +156,7 @@ class _MeusPedidosState extends State<MeusPedidos> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    _showDialog(idUsuarioLogado, idTerreno);
+                                    _showDialog(idUsuarioLogado, idPedido);
                                   },
                                   child: Padding(
                                     padding: EdgeInsets.only(right: 0),
@@ -195,20 +181,20 @@ class _MeusPedidosState extends State<MeusPedidos> {
   }
 
 
-  void _showDialog(idUsuarioLogado, idTerreno) {
+  void _showDialog(idUsuarioLogado, idPedido) {
     // flutter defined function
     showDialog(
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: new Text("Deseja realmente excluir o lote?"),
+          title: new Text("Deseja realmente excluir o pedido?"),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
               child: new Text("Sim"),
               onPressed: (){
-                _removerTerreno(idUsuarioLogado, idTerreno);
+                _removerPedido(idUsuarioLogado, idPedido);
                 Navigator.of(context).pop();
               },
 
@@ -226,45 +212,33 @@ class _MeusPedidosState extends State<MeusPedidos> {
     );
   }
 
-  void _removerTerreno(String idUsuarioLogado, String idTerreno) {
+  void _removerPedido(String idUsuarioLogado, String idPedido) {
 
-    String titulo                 = "";
-    String cidade                 = "";
-    String descricao              = "";
-    String vlTotal                = "";
-    String vlEntrada              = "";
-    String vlParcela              = "";
-    String dataPrimeiraParcela    = "";
-    String dataUltimaParcela      = "";
-    String dataDiaDoPagamento     = "";
-    String apresentarRegistro     = "";
-    Pedido terreno = new Pedido(cidade, descricao,titulo, vlParcela, vlTotal,
-        vlEntrada, dataPrimeiraParcela, dataUltimaParcela, dataDiaDoPagamento, apresentarRegistro);
+    String Massa_PVA          = '';
+    String Massa_Acrilica     = '';
+    String Selador_Acrilico   = '';
+    String Latex_Economico    = '';
+    String Grafiato_Acrilico  = '';
+    String Textura_Acrilica   = '';
+    String apresentarRegistro = '';
 
-    terreno.excluirPedido(idUsuarioLogado, idTerreno);
+    //criando objeto Pedido
+    Pedido pedido = Pedido(
+        Massa_Acrilica,
+        Selador_Acrilico,
+        Massa_PVA,
+        Textura_Acrilica,
+        Latex_Economico,
+        Grafiato_Acrilico,
+        apresentarRegistro);
+
+
+    pedido.excluirPedido(idUsuarioLogado, idPedido);
 
 
   }
 
-  void _atualizarTerreno({Pedido terreno}) {
-
-    String titulo                 = "";
-    String cidade                 = "";
-    String descricao              = "";
-    String vlTotal                = "";
-    String vlEntrada              = "";
-    String vlParcela              = "";
-    String dataPrimeiraParcela    = "";
-    String dataUltimaParcela      = "";
-    String dataDiaDoPagamento     = "";
-    String apresentarRegistro     = "";
-    Pedido terreno = new Pedido(cidade, descricao,titulo, vlParcela, vlTotal,
-        vlEntrada, dataPrimeiraParcela, dataUltimaParcela, dataDiaDoPagamento, apresentarRegistro);
-
-  //  terreno.excluirTerreno(idUsuarioLogado, idTerreno);
-  }
 
 
 
- */
 }

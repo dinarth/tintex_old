@@ -1,6 +1,6 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tintex/helper/Formatador.dart';
 import 'package:tintex/model/Usuario.dart';
 
 class Pedido{
@@ -13,7 +13,8 @@ class Pedido{
   String _Latex_Economico;
   String _Grafiato_Acrilico;
   String _apresentarRegistro;
-
+  String _numero_Pedido;
+  String _Acao;
 
   Firestore db                  = Firestore.instance;
 //  String idUsuarioLogado        = 'LniQVMDb1bRvDVetHaHt5c5VhiB2';
@@ -23,7 +24,7 @@ class Pedido{
 
 
 
-  Pedido(Massa_Acrilica, Selador_Acrilico,Massa_PVA, Textura_Acrilica, Latex_Economico, Grafiato_Acrilico, apresentarRegistro){
+  Pedido(Massa_Acrilica, Selador_Acrilico,Massa_PVA, Textura_Acrilica, Latex_Economico, Grafiato_Acrilico, apresentarRegistro,  [numeroPedido , idPedido]){
     this.selador_Acrilico                     = Selador_Acrilico;
     this.massa_PVA                            = Massa_PVA;
     this.massa_Acrilica                       = Massa_Acrilica;
@@ -31,11 +32,54 @@ class Pedido{
     this.textura_Acrilica                     = Textura_Acrilica;
     this.latex_Economico                      = Latex_Economico;
     this.apresentarRegistro                   = apresentarRegistro;
+    this.numero_Pedido                        = numeroPedido;
+    this.id                                   = idPedido;
+
   }
 
-  Map<String, dynamic> toMap(){
+  Map<String, dynamic> toMapAtualizar(){
+
+    String dateTimeNow = new DateTime.now().toString();
+
+    //   set numero_Pedido(numeroPedido);
+    Formatador formatador = new Formatador();
+
+    String dataAtualizacao   = formatador.formatarData(dateTimeNow);
 
     Map<String, dynamic> map = {
+      'data_Atualizacao'    : dataAtualizacao,
+      "massa_Acrilica"      : this.massa_Acrilica,
+      "selador_Acrilico"    : this.selador_Acrilico,
+      "massa_PVA"           : this.massa_PVA,
+      "textura_Acrilica"    : this.textura_Acrilica,
+      "latex_Economico"     : this.latex_Economico,
+      "grafiato_Acrilico"   : this.grafiato_Acrilico,
+      "apresentarRegistro"  : this.apresentarRegistro
+    };
+
+    return map;
+  }
+
+  Map<String, dynamic> toMapInserir(){
+
+    String dateTimeNow = new DateTime.now().toString();
+
+    String numeroPedido     = dateTimeNow.replaceAll("-", "");
+    numeroPedido     = numeroPedido.replaceAll(":", "");
+    numeroPedido     = numeroPedido.replaceAll(".", "");
+    numeroPedido     = numeroPedido.replaceAll(" ", "");
+    numeroPedido     = numeroPedido.substring(2,16);
+
+    this._numero_Pedido = numeroPedido;
+ //   set numero_Pedido(numeroPedido);
+    Formatador formatador = new Formatador();
+
+    String dataPedido   = formatador.formatarData(dateTimeNow);
+
+    Map<String, dynamic> map = {
+      "numero_Pedido"       : numeroPedido,
+      'data_Pedido'         : dataPedido,
+      'data_Atualizacao'    : dataPedido,
       "massa_Acrilica"      : this.massa_Acrilica,
       "selador_Acrilico"    : this.selador_Acrilico,
       "massa_PVA"           : this.massa_PVA,
@@ -57,7 +101,7 @@ class Pedido{
         .document(idUsuarioLogado)
         .collection("pedido")
         .document()
-        .setData(pedido.toMap());
+        .setData(pedido.toMapInserir());
   }
 
   void excluirPedido(idUsuarioLogado, idPedido){
@@ -79,16 +123,17 @@ class Pedido{
         .document(idUsuarioLogado)
         .collection("pedido")
         .document(idPedido)
-        .updateData(pedido.toMap());
+        .updateData(pedido.toMapAtualizar());
 
   }
 
 
-  String get id => _id;
 
-  set id(String value) {
-    _id = value;
-  }
+//  String get id => _id;
+//
+//  set id(String value) {
+//    _id = value;
+//  }
 
 
   String get massa_Acrilica => _Massa_Acrilica;
@@ -134,4 +179,24 @@ class Pedido{
   set apresentarRegistro(String value) {
     _apresentarRegistro = value;
   }
+
+  String get Acao => _Acao;
+
+  set Acao(String value) {
+    _Acao = value;
+  }
+
+  String get numero_Pedido => _numero_Pedido;
+
+  set numero_Pedido(String value) {
+    _numero_Pedido = value;
+  }
+
+
+  String get id => _id;
+
+  set id(String value) {
+    _id = value;
+  }
+
 }

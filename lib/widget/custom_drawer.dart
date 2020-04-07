@@ -44,7 +44,7 @@ class CustomDrawer extends StatelessWidget {
                     Positioned(
                       top: 8.0,
                       left: 0.0,
-                      child: Text("Controle de \n Lotes",
+                      child: Text("Tintex",
                         style: TextStyle(fontSize: 34.0, fontWeight: FontWeight.bold),
                       ),
                     ),

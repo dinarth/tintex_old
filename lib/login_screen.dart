@@ -103,6 +103,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                   ),
+                  SizedBox(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Image(image: AssetImage("assets/logo.PNG"), ),
+                      ],
+                    ),
+                  )
                 ],
               ),
             );

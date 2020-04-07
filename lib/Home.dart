@@ -19,7 +19,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   final _pageController = PageController();
   Usuario usuario = new Usuario();
   TabController _tabController;
-  String titulo = "Controle de Terrenos";
+  String titulo = "Tintex";
 
 
 
@@ -49,7 +49,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         return PageView(
           controller: _pageController,
           children: <Widget>[
-            /*Scaffold(
+            Scaffold(
 
               appBar: AppBar(
               centerTitle: true,
@@ -60,7 +60,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
               floatingActionButton: FloatingActionButton(
               onPressed: _sair,
               ),
-            ),*/
+            ),
             Scaffold(
               appBar: AppBar(
                 title: Text(titulo),

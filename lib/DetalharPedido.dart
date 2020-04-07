@@ -8,22 +8,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 
-class TerceiraPagina extends StatefulWidget {
+class DetalharPedido extends StatefulWidget {
   final Pedido terreno;
 
-  TerceiraPagina(this.terreno);
+  DetalharPedido(this.terreno);
 
   @override
-  _TerceiraPaginaState createState() => _TerceiraPaginaState(terreno);
+  _DetalharPedidoState createState() => _DetalharPedidoState(terreno);
 }
 
-class _TerceiraPaginaState extends State<TerceiraPagina> {
+class _DetalharPedidoState extends State<DetalharPedido> {
   final Pedido terreno;
   Firestore db = Firestore.instance;
-  String idUsuarioLogado = 'LniQVMDb1bRvDVetHaHt5c5VhiB2';
-  //String terreno                = '003';
 
-  _TerceiraPaginaState(this.terreno);
+  _DetalharPedidoState(this.terreno);
 
 
   int mandar_push(data_do_pagamento){
@@ -110,7 +108,7 @@ class _TerceiraPaginaState extends State<TerceiraPagina> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Controle de Terrenos"),
+          title: Text("Tintex"),
         ),
         body: Container(
             child: SingleChildScrollView(
@@ -119,7 +117,7 @@ class _TerceiraPaginaState extends State<TerceiraPagina> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     Text(
-                      "Detalhamento do Terreno",
+                      "Detalhamento do Pedido XX",
                       textAlign: TextAlign.start,
                       style: TextStyle(fontWeight: FontWeight.w500),
                     ),
@@ -129,7 +127,7 @@ class _TerceiraPaginaState extends State<TerceiraPagina> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text("Título:"),
+                        Text("Massa Acrílica:"),
                         Text("${terreno.massa_Acrilica}")
                       ],
                     ),
@@ -137,7 +135,7 @@ class _TerceiraPaginaState extends State<TerceiraPagina> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text("Cidade: "),
+                        Text("Selador Acrílico: "),
                         Text("${terreno.selador_Acrilico}")
                       ],
                     ),
@@ -145,7 +143,7 @@ class _TerceiraPaginaState extends State<TerceiraPagina> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text("Valor da Parcela: "),
+                        Text("Grafiato Acrílico: "),
                         Text("${terreno.grafiato_Acrilico}")
                       ],
                     ),
@@ -153,7 +151,7 @@ class _TerceiraPaginaState extends State<TerceiraPagina> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text("Valor Total: "),
+                        Text("Textura Acrílica: "),
                         Text("${terreno.textura_Acrilica}")
                       ],
                     ),
@@ -161,7 +159,7 @@ class _TerceiraPaginaState extends State<TerceiraPagina> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text("Valor da Entrada: "),
+                        Text("Latex Econômico: "),
                         Text("${terreno.latex_Economico}")
                       ],
                     ),
@@ -169,7 +167,7 @@ class _TerceiraPaginaState extends State<TerceiraPagina> {
                     Divider(),
                     RaisedButton(
                       child: Text('notificação'),
-                      onPressed: _showNotification,
+                      //onPressed: _showNotification,
                     ),
 
                       ],

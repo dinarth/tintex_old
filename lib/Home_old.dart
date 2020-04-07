@@ -49,7 +49,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
           appBar: AppBar(
             centerTitle: true,
-            title: Text("Controle de Terrenos"),
+            title: Text("Tintex"),
             bottom: TabBar(
               controller: _tabController,
 

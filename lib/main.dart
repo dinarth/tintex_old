@@ -12,8 +12,8 @@ class MyApp extends StatelessWidget {
     // TODO: implement build
     return ScopedModel<Usuario>(
       model: Usuario(),
-      child: Usuario().isLoggedIn() ?  MaterialApp(title: "Controle de Terrenos", home: Home()) :
-      MaterialApp(title: "Controle de Terrenos", home: LoginScreen()),
+      child: Usuario().isLoggedIn() ?  MaterialApp(title: "Tintex", home: Home()) :
+      MaterialApp(title: "Tintex", home: LoginScreen()),
     );
   }
 }
