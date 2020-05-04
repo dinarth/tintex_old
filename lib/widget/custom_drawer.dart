@@ -1,4 +1,4 @@
-import 'package:tintex/MeusPedidos.dart';
+import 'package:tintex/MeusPedidos_old.dart.';
 import 'package:tintex/login_screen.dart';
 import 'package:tintex/model/Usuario.dart';
 import 'package:tintex/tiles/drawer_tile.dart';

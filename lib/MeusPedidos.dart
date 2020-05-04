@@ -29,10 +29,9 @@ class _MeusPedidosState extends State<MeusPedidos> {
 
   Stream<QuerySnapshot> _recuperarListenerPedidos() {
     final stream = db
-        .collection("pedidos")
-        .document(idUsuarioLogado)
-        .collection("pedido")
-        .where("apresentarRegistro", isEqualTo: '1')
+        .collection("pedidosSis")
+        .where('cliente.idUsuario', isEqualTo: idUsuarioLogado)
+        .where("apresentar_registro", isEqualTo: '1')
         .snapshots();
 
     stream.listen((dados) {
@@ -51,6 +50,8 @@ class _MeusPedidosState extends State<MeusPedidos> {
 
       _recuperarListenerPedidos();
     });
+
+//  _recuperarListenerPedidos();
 
   }
 
@@ -98,15 +99,15 @@ class _MeusPedidosState extends State<MeusPedidos> {
 
 
 
-                        String Massa_PVA                    = item['massa_PVA'];
-                        String Massa_Acrilica               = item['massa_Acrilica'];
-                        String Selador_Acrilico             = item['selador_Acrilico'];
-                        String Latex_Economico              = item['latex_Economico'];
-                        String Grafiato_Acrilico            = item['grafiato_Acrilico'];
-                        String Textura_Acrilica             = item['textura_Acrilica'];
-                        String apresentarRegistro           = item['apresentarRegistro'];
-                        String dataPedido                   = item['data_Pedido'];
-                        String numeroPedido                 = item['numero_Pedido'];
+                        String Massa_PVA                    = item['massa_pva'];
+                        String Massa_Acrilica               = item['massa_acrilica'];
+                        String Selador_Acrilico             = item['selador_acrilico'];
+                        String Latex_Economico              = item['latex_economico'];
+                        String Grafiato_Acrilico            = item['grafiato_acrilico'];
+                        String Textura_Acrilica             = item['textura_acrilica'];
+                        String apresentarRegistro           = item['apresentar_registro'];
+                        String dataPedido                   = item['data_pedido'];
+                        String numeroPedido                 = item['numero_pedido'];
                         String idPedido                     = item.documentID;
 
 

@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tintex/MeusPedidos.dart';
+import 'package:tintex/MeusPedidos.dart.';
 import 'package:tintex/RealizarPedido.dart';
 import 'package:tintex/model/Pedido.dart';
 import 'package:tintex/model/Produto.dart';

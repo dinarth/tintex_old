@@ -3,7 +3,7 @@ import 'package:tintex/model/Usuario.dart';
 import 'package:tintex/widget/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:tintex/RealizarPedido.dart';
-import 'package:tintex/MeusPedidos.dart';
+import 'package:tintex/MeusPedidos.dart.';
 
 import 'package:scoped_model/scoped_model.dart';
 
@@ -38,6 +38,9 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     _tabController.dispose();
   }
 
+
+
+
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<Usuario>(
@@ -53,17 +56,15 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
               appBar: AppBar(
               centerTitle: true,
-              title: Text(titulo),
+              title: Text('Meus Pedidos'),
               ),
               body: MeusPedidos(),
               drawer: CustomDrawer(_pageController),
-              floatingActionButton: FloatingActionButton(
-              onPressed: _sair,
-              ),
+
             ),
             Scaffold(
               appBar: AppBar(
-                title: Text(titulo),
+                title: Text('Realizar Pedido'),
                 centerTitle: true,
               ),
               drawer: CustomDrawer(_pageController),
@@ -75,6 +76,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
     );
   }
+
 
   void _sair() {
     Usuario usuario = new Usuario();

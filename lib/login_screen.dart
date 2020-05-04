@@ -1,4 +1,5 @@
 import 'package:tintex/Home.dart';
+import 'package:tintex/fabrica/HomeFabrica.dart';
 import 'package:tintex/model/Usuario.dart';
 import 'package:tintex/signup_screen.dart';
 import 'package:flutter/material.dart';
@@ -121,10 +122,17 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onSuccess() {
-    Future.delayed(Duration(milliseconds: 0)).then((_) {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
-    });
+    if (_emailController.text != 'dinarths@gmail.com') {
+      Future.delayed(Duration(milliseconds: 0)).then((_) {
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
+      });
+    }else{
+      Future.delayed(Duration(milliseconds: 0)).then((_) {
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (context) => HomeFabrica()));
+      });
+    }
   }
 
   void _onFail() {}

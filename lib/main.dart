@@ -20,24 +20,3 @@ class MyApp extends StatelessWidget {
 
 
 
-/*
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-void main(){
-  WidgetsFlutterBinding.ensureInitialized();
-  Firestore.instance.collection("produtos")
-      .document("tipo")
-      .setData({'pvc': '80', "lata tinta": "340"});
-
-  runApp(App());
-      
-}
-
-class App extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
-*/

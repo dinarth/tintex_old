@@ -3,7 +3,7 @@ import 'package:tintex/model/Usuario.dart';
 import 'package:tintex/widget/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:tintex/RealizarPedido.dart';
-import 'package:tintex/MeusPedidos.dart';
+import 'package:tintex/MeusPedidos.dart.';
 
 import 'package:scoped_model/scoped_model.dart';
 

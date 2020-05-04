@@ -1,15 +1,19 @@
 import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tintex/MeusPedidos.dart';
+import 'package:tintex/MeusPedidos.dart.';
 import 'package:tintex/RealizarPedido.dart';
 import 'package:tintex/model/Pedido.dart';
 import 'package:tintex/model/Produto.dart';
+import 'package:tintex/model/SolicitarPedido.dart';
 import 'package:tintex/model/Usuario.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
+import 'package:tintex/model/UsuarioSistema.dart';
+import 'package:tintex/util/StatusPedido.dart';
+import 'package:tintex/util/UsuarioFirebase.dart';
 
 import 'Home.dart';
 
@@ -235,14 +239,38 @@ class _ConfirmarPedidoState extends State<ConfirmarPedido> {
   }
 
 
-  _validarCampos(String idUsuarioLogado) {
+  _validarCampos(String idUsuarioLogado)async {
 
     pedido.cadastrarPedido(pedido, idUsuarioLogado);
 
     String numeroPedido = pedido.numero_Pedido;
 
-    _showDialog(idUsuarioLogado, numeroPedido);
 
+    ////////////////////Novo cadastro de pedido//////////////////
+
+    UsuarioSistema usuarioSistema = await  UsuarioFirebase.getDadosUsuarioLogado();
+
+    SolicitarPedido solicitarPedido = SolicitarPedido();
+    solicitarPedido.status          = StatusPedido.ENVIADO;
+    solicitarPedido.usuarioSistema  = usuarioSistema;
+    solicitarPedido.Grafiato_Acrilico = pedido.grafiato_Acrilico;
+    solicitarPedido.apresentarRegistro = '1';
+    solicitarPedido.Latex_Economico = pedido.latex_Economico;
+    solicitarPedido.Massa_Acrilica = pedido.massa_Acrilica;
+    solicitarPedido.Massa_PVA = pedido.massa_PVA;
+    solicitarPedido.numero_Pedido = pedido.numero_Pedido;
+    solicitarPedido.Selador_Acrilico = pedido.selador_Acrilico;
+    solicitarPedido.Textura_Acrilica = pedido.textura_Acrilica;
+    solicitarPedido.data_atualizacao = pedido.data_atualizacao;
+    solicitarPedido.data_pedido = pedido.data_pedido;
+
+    Firestore db = Firestore.instance;
+
+    db.collection('pedidosSis')
+    .add(solicitarPedido.toMap());
+
+
+    _showDialog(idUsuarioLogado, numeroPedido);
 
   }
 
@@ -282,21 +310,4 @@ class _ConfirmarPedidoState extends State<ConfirmarPedido> {
 
 
 
-  String _buildTerrenoText(DocumentSnapshot snapshot) {
-    String text = "Título: \n";
-    for (DocumentSnapshot t in snapshot.data['titulo']) {
-      text += "${t['titulo']}";
-    }
-    text += "Parcela: R\$ ${snapshot.data['vlParcela'].toStringAsFixed(2)}";
-    return text;
-  }
-
-  String _buildTerrenoText2(DocumentSnapshot snapshot) {
-    String text = "Título: \n";
-    for (LinkedHashMap t in snapshot.data['terreno']) {
-      text += "${t['titulo']}";
-    }
-    text += "Parcela: R\$ ${snapshot.data['vlParcela'].toStringAsFixed(2)}";
-    return text;
-  }
 }

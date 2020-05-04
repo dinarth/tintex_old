@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:tintex/ConfirmarPedido.dart';
 import 'package:tintex/model/Pedido.dart';
 import 'package:tintex/model/Usuario.dart';
@@ -80,12 +81,17 @@ class _RealizarPedidoState extends State<RealizarPedido> {
                         width: 1.0,
                       ),
                     ),
-                    child: new TextField(
+                    child: new TextFormField(
+                      inputFormatters:  <TextInputFormatter>[
+                        WhitelistingTextInputFormatter.digitsOnly
+                      ],
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
+                      maxLength: 3,
                       decoration: new InputDecoration(
-                        labelText: '0',
+                        hintText: '0',
                         border: InputBorder.none,
+                        counterText: '',
                       ),
                       controller: _Massa_PVA,
                     ),
@@ -113,12 +119,17 @@ class _RealizarPedidoState extends State<RealizarPedido> {
                         width: 1.0,
                       ),
                     ),
-                    child: new TextField(
+                    child: new TextFormField(
+                      inputFormatters:  <TextInputFormatter>[
+                        WhitelistingTextInputFormatter.digitsOnly
+                      ],
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
+                      maxLength: 3,
                       decoration: new InputDecoration(
-                        labelText: '0',
+                        hintText: '0',
                         border: InputBorder.none,
+                        counterText: '',
                       ),
                       controller: _Massa_Acrilica,
                     ),
@@ -146,12 +157,17 @@ class _RealizarPedidoState extends State<RealizarPedido> {
                         width: 1.0,
                       ),
                     ),
-                    child: new TextField(
+                    child: new TextFormField(
+                      inputFormatters:  <TextInputFormatter>[
+                        WhitelistingTextInputFormatter.digitsOnly
+                      ],
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
+                      maxLength: 3,
                       decoration: new InputDecoration(
-                        labelText: '0',
+                        hintText: '0',
                         border: InputBorder.none,
+                        counterText: '',
                       ),
                       controller: _Selador_Acrilico,
                     ),
@@ -179,12 +195,17 @@ class _RealizarPedidoState extends State<RealizarPedido> {
                         width: 1.0,
                       ),
                     ),
-                    child: new TextField(
+                    child: new TextFormField(
+                      inputFormatters:  <TextInputFormatter>[
+                        WhitelistingTextInputFormatter.digitsOnly
+                      ],
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
+                      maxLength: 3,
                       decoration: new InputDecoration(
-                        labelText: '0',
+                        hintText: '0',
                         border: InputBorder.none,
+                        counterText: '',
                       ),
                       controller: _Latex_Economico,
                     ),
@@ -212,12 +233,17 @@ class _RealizarPedidoState extends State<RealizarPedido> {
                         width: 1.0,
                       ),
                     ),
-                    child: new TextField(
+                    child: new TextFormField(
+                      inputFormatters:  <TextInputFormatter>[
+                        WhitelistingTextInputFormatter.digitsOnly
+                      ],
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
+                      maxLength: 3,
                       decoration: new InputDecoration(
-                        labelText: '0',
+                        hintText: '0',
                         border: InputBorder.none,
+                        counterText: '',
                       ),
                       controller: _Grafiato_Acrilico,
                     ),
@@ -245,12 +271,17 @@ class _RealizarPedidoState extends State<RealizarPedido> {
                         width: 1.0,
                       ),
                     ),
-                    child: new TextField(
+                    child: new TextFormField(
+                      inputFormatters:  <TextInputFormatter>[
+                        WhitelistingTextInputFormatter.digitsOnly
+                      ],
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
+                      maxLength: 3,
                       decoration: new InputDecoration(
-                        labelText: '0',
+                        hintText: '0',
                         border: InputBorder.none,
+                        counterText: '',
                       ),
                       controller: _Textura_Acrilica,
                     ),
@@ -266,6 +297,7 @@ class _RealizarPedidoState extends State<RealizarPedido> {
                     child: Text("R\$15,90"),
                   ),
                 ]),
+
 
             Padding(
               padding: EdgeInsets.only(top: 10),

@@ -15,6 +15,15 @@ class Pedido{
   String _apresentarRegistro;
   String _numero_Pedido;
   String _Acao;
+  String _data_atualizacao;
+  String _data_pedido;
+//  Usuario _usuario;
+//
+//  Usuario get usuario => _usuario;
+//
+//  set usuario(Usuario value) {
+//    _usuario = value;
+//  }
 
   Firestore db                  = Firestore.instance;
 //  String idUsuarioLogado        = 'LniQVMDb1bRvDVetHaHt5c5VhiB2';
@@ -75,11 +84,13 @@ class Pedido{
     Formatador formatador = new Formatador();
 
     String dataPedido   = formatador.formatarData(dateTimeNow);
+    this.data_pedido = dataPedido;
+    this.data_atualizacao = dataPedido;
 
     Map<String, dynamic> map = {
       "numero_Pedido"       : numeroPedido,
-      'data_Pedido'         : dataPedido,
-      'data_Atualizacao'    : dataPedido,
+      'data_Pedido'         : this.data_pedido,
+      'data_Atualizacao'    : this.data_atualizacao,
       "massa_Acrilica"      : this.massa_Acrilica,
       "selador_Acrilico"    : this.selador_Acrilico,
       "massa_PVA"           : this.massa_PVA,
@@ -198,5 +209,18 @@ class Pedido{
   set id(String value) {
     _id = value;
   }
+
+  String get data_pedido => _data_pedido;
+
+  set data_pedido(String value) {
+    _data_pedido = value;
+  }
+
+  String get data_atualizacao => _data_atualizacao;
+
+  set data_atualizacao(String value) {
+    _data_atualizacao = value;
+  }
+
 
 }
