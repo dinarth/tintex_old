@@ -16,6 +16,11 @@ class SolicitarPedido {
   String _Acao;
   String _data_atualizacao;
   String _data_pedido;
+  String _qtd_total_itens;
+  String _valor_total;
+
+
+
   UsuarioSistema _usuarioSistema;
 
   SolicitarPedido();
@@ -39,6 +44,8 @@ class SolicitarPedido {
       'textura_acrilica'    : this.Textura_Acrilica,
       'data_atualizacao'    : this.data_atualizacao,
       'data_pedido'         : this.data_pedido,
+      "qtd_total_itens"     : this.qtd_total_itens,
+      "valor_total"         : this.valor_total,
       'cliente'             : dadosCliente
     };
 
@@ -64,7 +71,9 @@ class SolicitarPedido {
       "latex_economico"     : this.Latex_Economico,
       "grafiato_acrilico"   : this.Grafiato_Acrilico,
       "apresentar_registro" : this.apresentarRegistro,
-      "status"              : this.status
+      "status"              : this.status,
+      "qtd_total_itens"     : this.qtd_total_itens,
+      "valor_total"         : this.valor_total,
     };
 
     return map;
@@ -74,11 +83,28 @@ class SolicitarPedido {
     Firestore db = Firestore.instance;
         db.collection("pedidosSis")
         .document(solicitarPedido.id)
-//        .where("cliente.idUsuario", isEqualTo: idUsuarioLogado)
-//        .where("numero_pedido", isEqualTo: solicitarPedido.numero_Pedido)
         .updateData(solicitarPedido.toMapAtualizar());
 
   }
+
+
+  void cadastrarPedido(SolicitarPedido solicitarPedido){
+    Firestore db = Firestore.instance;
+    db.collection("pedidosSis")
+        .add(solicitarPedido.toMap());
+  }
+
+
+  void excluirPedido(idPedido){
+    Firestore db = Firestore.instance;
+
+    db.collection("pedidosSis")
+        .document(idPedido)
+        .updateData({
+      "apresentar_registro" : '0'
+    });
+  }
+
 
 
 
@@ -168,5 +194,16 @@ class SolicitarPedido {
 
   set data_pedido(String value) {
     _data_pedido = value;
+  }
+
+  String get valor_total => _valor_total;
+
+  set valor_total(String value) {
+    _valor_total = value;
+  }
+  String get qtd_total_itens => _qtd_total_itens;
+
+  set qtd_total_itens(String value) {
+    _qtd_total_itens = value;
   }
 }

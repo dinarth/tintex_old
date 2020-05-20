@@ -1,145 +1,79 @@
-import 'dart:collection';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tintex/MeusPedidos.dart.';
-import 'package:tintex/RealizarPedido.dart';
-import 'package:tintex/model/Pedido.dart';
 import 'package:tintex/model/Produto.dart';
 import 'package:tintex/model/SolicitarPedido.dart';
-import 'package:tintex/model/Usuario.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:tintex/model/UsuarioSistema.dart';
 import 'package:tintex/util/StatusPedido.dart';
 import 'package:tintex/util/UsuarioFirebase.dart';
 
 import 'Home.dart';
+import 'helper/Formatador.dart';
 
 class ConfirmarPedido extends StatefulWidget {
-  final Pedido pedido;
+  final SolicitarPedido solicitarPedido;
+  Produto produto;
   final String idUsuario;
 
 
-  ConfirmarPedido(this.pedido, this.idUsuario);
+  ConfirmarPedido(this.solicitarPedido,this.produto, this.idUsuario);
 
   @override
-  _ConfirmarPedidoState createState() => _ConfirmarPedidoState(pedido, idUsuario);
+  _ConfirmarPedidoState createState() => _ConfirmarPedidoState(solicitarPedido, produto);
 }
 
 class _ConfirmarPedidoState extends State<ConfirmarPedido> {
-  final Pedido pedido;
-  final String idUsuario;
+  final SolicitarPedido solicitarPedido;
   Firestore db                = Firestore.instance;
   Produto produto             = new Produto();
   String _valorTotalDoPedido;
+  String _qtdTotalPrd;
+
+  String pathMassaPVA     = 'assets/saco_massa_pva.PNG';
+  String pathMassaAcri    = 'assets/saco_massa_acrilica.PNG';
+  String pathSela         = 'assets/selador.PNG';
+  String pathGrafi        = 'assets/saco_grafiatto_rustico.PNG';
+  String pathLatex        = 'assets/latex_eco.PNG';
+  String pathTextura      = 'assets/saco_textura_acrilica.PNG';
+
+  double _heigth = 60.0;
+  double _width = 40.0;
 
 
 
-  String get valorTotalDoPedido => _valorTotalDoPedido;
 
-  set valorTotalDoPedido(String value) {
-    _valorTotalDoPedido = value;
-  }
-
-  _ConfirmarPedidoState(this.pedido, this.idUsuario);
+  _ConfirmarPedidoState(this.solicitarPedido,this.produto);
 
   valorTotalPedido(){
     double valorTotal;
-    valorTotal = double.parse(pedido.textura_Acrilica)     * produto.Preco_Textura_Acrilica;
-    valorTotal += double.parse(pedido.grafiato_Acrilico)   * produto.Preco_Grafiato_Acrilico;
-    valorTotal += double.parse(pedido.latex_Economico)     * produto.Preco_Latex_Economico;
-    valorTotal += double.parse(pedido.massa_Acrilica)      * produto.Preco_Massa_Acrilica;
-    valorTotal += double.parse(pedido.massa_PVA)           * produto.Preco_Massa_PVA;
+    int qtdTotalPrd;
+    valorTotal = double.parse(solicitarPedido.Textura_Acrilica)     * produto.Preco_Textura_Acrilica;
+    valorTotal += double.parse(solicitarPedido.Grafiato_Acrilico)   * produto.Preco_Grafiato_Acrilico;
+    valorTotal += double.parse(solicitarPedido.Latex_Economico)     * produto.Preco_Latex_Economico;
+    valorTotal += double.parse(solicitarPedido.Massa_Acrilica)      * produto.Preco_Massa_Acrilica;
+    valorTotal += double.parse(solicitarPedido.Massa_PVA)           * produto.Preco_Massa_PVA;
+    valorTotal += double.parse(solicitarPedido.Selador_Acrilico)    * produto.Preco_Selador_Acrilico;
+
+    qtdTotalPrd = int.parse(solicitarPedido.Textura_Acrilica) + int.parse(solicitarPedido.Grafiato_Acrilico) + int.parse(solicitarPedido.Latex_Economico) + int.parse(solicitarPedido.Massa_Acrilica) +
+        int.parse(solicitarPedido.Massa_PVA) + int.parse(solicitarPedido.Selador_Acrilico);
 
     NumberFormat formatar = NumberFormat("00.00");
     this.valorTotalDoPedido = formatar.format(valorTotal);
 
+    this.qtdTotalPrd = qtdTotalPrd.toString();
+
 
   }
 
 
-  int mandar_push(data_do_pagamento){
-    var now = new DateTime.now();
-    List<String> dia_pagamento = data_do_pagamento.split("/");
-    //String dia_atual = now.day.toString();
-    if(int.parse(dia_pagamento[0]) - now.day == 1){
-      return 1;
-    }
-    else{
-      return 99;
-    }
-  }
-
-  //===============================NOTIFICAÇÃO==========================//
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      new FlutterLocalNotificationsPlugin();
-  var initializationSettingsAndroid;
-  var initializationSettingsIOS;
-  var initializationSettings;
-
-  void _showNotification() async{
-    await _demoNotification();
-  }
-  Future<void> _demoNotification() async{
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'channel_ID', 'channel name', 'channel description',
-      importance:  Importance.Max,
-      priority: Priority.High,
-      ticker: 'test ticker');
-
-    var IOSChannelSpecifics = IOSNotificationDetails();
-    var platformChannelSpecifics = NotificationDetails(
-      androidPlatformChannelSpecifics, IOSChannelSpecifics);
-
-    await flutterLocalNotificationsPlugin.show(0, 'Vai dar o caLOTE?',
-    'O dia do pagamento do seu lote está proximo', platformChannelSpecifics,
-    payload: 'test oayload');
-  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    initializationSettingsAndroid = new AndroidInitializationSettings('icone_app');
-    initializationSettingsIOS = new IOSInitializationSettings(
-      onDidReceiveLocalNotification: onDidReceiveLocalNotification);
-    initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-    onSelectNotification: onSelectNotification);
-
 
     valorTotalPedido();
-  }
-  Future onSelectNotification(String payload) async{
-    if(payload != null){
-      debugPrint('Notification payload: $payload');
-    }
-    await Navigator.push(context,
-    new MaterialPageRoute(builder: (context) => new MeusPedidos()));
-  }
-
-
-  Future onDidReceiveLocalNotification(int id, String title, String body, String payload) async{
-    await showDialog(
-      context: context,
-      builder: (BuildContext context)=>CupertinoAlertDialog(
-        title: Text(title),
-        content: Text(body),
-        actions: <Widget>[
-          CupertinoDialogAction(
-            isDefaultAction: true,
-            child: Text('Ok'),
-            onPressed: () async{
-          Navigator.of(context, rootNavigator:true).pop();
-          await Navigator.push(context,
-           MaterialPageRoute(builder: (context)=>MeusPedidos()));
-            },
-          )
-        ],
-      )
-    );
   }
 
 
@@ -147,152 +81,239 @@ class _ConfirmarPedidoState extends State<ConfirmarPedido> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: Text("Confirmar Pedido"),
         ),
         body: Container(
             child: SingleChildScrollView(
-                padding: EdgeInsets.all(32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Text(
-                      "Confirmação do Pedido",
-                      textAlign: TextAlign.start,
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                    SizedBox(
-                      height: 12.0,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text("Valor total do pedido:"),
-                        Text("${valorTotalDoPedido.toString()}")
-                      ],
-                    ),
-                    Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text("Massa Acrílica:"),
-                        Text("${pedido.massa_Acrilica}")
-                      ],
-                    ),
-                    Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text("Selador Acrílico: "),
-                        Text("${pedido.selador_Acrilico}")
-                      ],
-                    ),
-                    Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text("Grafiato Acrílico: "),
-                        Text("${pedido.grafiato_Acrilico}")
-                      ],
-                    ),
-                    Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text("Textura Acrílica: "),
-                        Text("${pedido.textura_Acrilica}")
-                      ],
-                    ),
-                    Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text("Latex Econômico: "),
-                        Text("${pedido.latex_Economico}")
-                      ],
-                    ),
+              padding: EdgeInsets.all(32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Text(
+                    "Confirmação da atualização do Pedido",
+                    textAlign: TextAlign.start,
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  SizedBox(
+                    height: 12.0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
 
-                    Divider(),
-                    Padding(
-                      padding: EdgeInsets.only(top: 10),
-                      child: RaisedButton(
-                        color: Colors.blue,
-                        textColor: Colors.white,
-                        padding: EdgeInsets.all(15),
-                        child: Text(
-                          "Confirmar Pedido",
-                          style: TextStyle(
-                              fontSize: 20
-                          ),
-                        ),
-                        onPressed: (){
-                          _validarCampos(idUsuario);
-                        },
+                      Text("Valor total do pedido: R\$ ${valorTotalDoPedido.toString()}"),
+                      Text(""),
+                      Text("QTD"),
+                    ],
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Image(
+                        image: AssetImage(pathMassaAcri),
+                        fit: BoxFit.cover,
+                        height: _heigth,
+                        width: _width,
                       ),
-                    ),
+                      Text("Massa Acrílica:", textAlign: TextAlign.right,),
+                      Text("${solicitarPedido.Massa_Acrilica}")
+                    ],
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Image(
+                        image: AssetImage(pathSela),
+                        fit: BoxFit.cover,
+                        height: _heigth,
+                        width: _width,
+                      ),
+                      Text("Selador Acrílico: ", textAlign: TextAlign.right,),
+                      Text("${solicitarPedido.Selador_Acrilico}")
+                    ],
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Image(
+                        image: AssetImage(pathGrafi),
+                        fit: BoxFit.cover,
+                        height: _heigth,
+                        width: _width,
+                      ),
+                      Text("Grafiato Acrílico: ", textAlign: TextAlign.right,),
+                      Text("${solicitarPedido.Grafiato_Acrilico}")
+                    ],
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Image(
+                        image: AssetImage(pathTextura),
+                        fit: BoxFit.cover,
+                        height: _heigth,
+                        width: _width,
+                      ),
+                      Text("Textura Acrílica: ", textAlign: TextAlign.right,),
+                      Text("${solicitarPedido.Textura_Acrilica}")
+                    ],
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Image(
+                        image: AssetImage(pathLatex),
+                        fit: BoxFit.cover,
+                        height: _heigth,
+                        width: _width,
+                      ),
+                      Text("Latex Econômico: ", textAlign: TextAlign.right,),
+                      Text("${solicitarPedido.Latex_Economico}")
+                    ],
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Image(
+                        image: AssetImage(pathMassaPVA),
+                        fit: BoxFit.cover,
+                        height: _heigth,
+                        width: _width,
+                      ),
+                      Text("Latex Econômico: ", textAlign: TextAlign.right,),
+                      Text("${solicitarPedido.Massa_PVA}")
+                    ],
+                  ),
 
-                      ],
-                    ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
 
-                )
+                      Text(""),
+                      Text("Total itens:", textAlign: TextAlign.right, style: TextStyle(fontSize: 18),),
+                      Text("${qtdTotalPrd}",style: TextStyle(fontSize: 18),),
+                    ],
+                  ),
+                  Divider(),
+                  Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: RaisedButton(
+                      color: Colors.blue,
+                      textColor: Colors.white,
+                      padding: EdgeInsets.all(15),
+                      child: Text(
+                        "Confirmar Pedido",
+                        style: TextStyle(
+                            fontSize: 20
+                        ),
+                      ),
+                      onPressed: (){
+                        _validarCampos();
+                      },
+                    ),
+                  ),
+
+                ],
+              ),
+
             )
+        )
         );
   }
 
 
-  _validarCampos(String idUsuarioLogado)async {
+  _validarCampos()async {
+    //////////////////FORMATAR NUMERO DO PEDIDO////////////////////////
+    String dateTimeNow = new DateTime.now().toString();
 
-    pedido.cadastrarPedido(pedido, idUsuarioLogado);
+    String numeroPedido     = dateTimeNow.replaceAll("-", "");
+    numeroPedido     = numeroPedido.replaceAll(":", "");
+    numeroPedido     = numeroPedido.replaceAll(".", "");
+    numeroPedido     = numeroPedido.replaceAll(" ", "");
+    numeroPedido     = numeroPedido.substring(2,16);
 
-    String numeroPedido = pedido.numero_Pedido;
+    /////////////////////FORMATAR DATAS/////////////////////////////////
+    Formatador formatador = new Formatador();
+
+    String dataPedido   = formatador.formatarData(dateTimeNow);
+
+
+
 
 
     ////////////////////Novo cadastro de pedido//////////////////
 
     UsuarioSistema usuarioSistema = await  UsuarioFirebase.getDadosUsuarioLogado();
 
-    SolicitarPedido solicitarPedido = SolicitarPedido();
-    solicitarPedido.status          = StatusPedido.ENVIADO;
-    solicitarPedido.usuarioSistema  = usuarioSistema;
-    solicitarPedido.Grafiato_Acrilico = pedido.grafiato_Acrilico;
-    solicitarPedido.apresentarRegistro = '1';
-    solicitarPedido.Latex_Economico = pedido.latex_Economico;
-    solicitarPedido.Massa_Acrilica = pedido.massa_Acrilica;
-    solicitarPedido.Massa_PVA = pedido.massa_PVA;
-    solicitarPedido.numero_Pedido = pedido.numero_Pedido;
-    solicitarPedido.Selador_Acrilico = pedido.selador_Acrilico;
-    solicitarPedido.Textura_Acrilica = pedido.textura_Acrilica;
-    solicitarPedido.data_atualizacao = pedido.data_atualizacao;
-    solicitarPedido.data_pedido = pedido.data_pedido;
-
-    Firestore db = Firestore.instance;
-
-    db.collection('pedidosSis')
-    .add(solicitarPedido.toMap());
+    solicitarPedido.status                  = StatusPedido.ENVIADO;
+    solicitarPedido.usuarioSistema          = usuarioSistema;
+    solicitarPedido.apresentarRegistro      = '1';
+    solicitarPedido.numero_Pedido           = numeroPedido;
+    solicitarPedido.data_pedido             = dataPedido;
+    solicitarPedido.data_atualizacao        = dataPedido;
+    solicitarPedido.qtd_total_itens         = qtdTotalPrd;
+    solicitarPedido.valor_total             = valorTotalDoPedido;
 
 
-    _showDialog(idUsuarioLogado, numeroPedido);
-
+    if(valorTotalDoPedido == '00.00'){
+      _showPedidoNaoConfirmado();
+    }else {
+      solicitarPedido.cadastrarPedido(solicitarPedido);
+      _showDialog(numeroPedido);
+    }
   }
 
-  void _showDialog(idUsuarioLogado, idPedido) {
+  void _showPedidoNaoConfirmado() {
     // flutter defined function
     showDialog(
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: new Text("Pedido " + idPedido + " realizado com sucesso."),
+          title: new Text("Pedido não confirmado. Pedido zerado. Favor conferir a solicitação."),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
-              child: new Text("Novo Pedido"),
+              child: new Text("OK"),
               onPressed: (){
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                       RealizarPedido()));
-              },
+                Navigator.of(context).pop();
 
+              },
             ),
+
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDialog(numeroPedido) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Pedido " + numeroPedido + " realizado com sucesso."),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+//            new FlatButton(
+//              child: new Text("Novo Pedido"),
+//              onPressed: (){
+//                Navigator.of(context).push(MaterialPageRoute(
+//                    builder: (context) =>
+//                       RealizarPedido()));
+//              },
+//
+//            ),
             new FlatButton(
               child: new Text("Listar Pedidos"),
               onPressed: () {
@@ -308,6 +329,14 @@ class _ConfirmarPedidoState extends State<ConfirmarPedido> {
     );
   }
 
+  String get qtdTotalPrd => _qtdTotalPrd;
 
+  set qtdTotalPrd(String value) {
+    _qtdTotalPrd = value;
+  }
+  String get valorTotalDoPedido => _valorTotalDoPedido;
 
+  set valorTotalDoPedido(String value) {
+    _valorTotalDoPedido = value;
+  }
 }

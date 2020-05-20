@@ -1,6 +1,6 @@
 # tintex
 
-Projeto para controlar os lotes adquiridos.
+Projeto para controlar os pedidos solicitados à fábrica da Tintex.
 
 ## Getting Started
 

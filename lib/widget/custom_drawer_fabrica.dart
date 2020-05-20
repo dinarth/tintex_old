@@ -1,4 +1,3 @@
-import 'package:tintex/MeusPedidos_old.dart.';
 import 'package:tintex/login_screen.dart';
 import 'package:tintex/model/Usuario.dart';
 import 'package:tintex/tiles/drawer_tile.dart';
@@ -44,8 +43,12 @@ class CustomDrawerFabrica extends StatelessWidget {
                     Positioned(
                       top: 8.0,
                       left: 0.0,
-                      child: Text("Tintex",
-                        style: TextStyle(fontSize: 34.0, fontWeight: FontWeight.bold),
+                      child: Image.asset(
+                        "assets/logo.PNG",
+                        height: 60,
+                        width: 180,
+                        fit: BoxFit.fitWidth,
+
                       ),
                     ),
                     Positioned(
@@ -103,7 +106,7 @@ class CustomDrawerFabrica extends StatelessWidget {
               DrawerTile(Icons.list, "Pedidos em Produção", pageController, 1 ),
               DrawerTile(Icons.list, "Pedidos Finalizados", pageController, 2 ),
               DrawerTile(Icons.list, "Listar Produtos", pageController, 3 ),
-              DrawerTile(Icons.add, "Cadastrar Produto", pageController, 4 ),
+       //       DrawerTile(Icons.add, "Cadastrar Produto", pageController, 4 ),
             ],
           )
 

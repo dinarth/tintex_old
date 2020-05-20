@@ -1,5 +1,5 @@
 name: tintex
-description: Projeto para controlar os lotes adquiridos.
+description: Projeto para controlar os pedidos da fábrica Tintex.
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -66,6 +66,12 @@ flutter:
   #  - images/a_dot_ham.jpeg
   assets:
     - assets/
+    - assets/saco_massa_acrilica.PNG
+    - assets/saco_textura_acrilica.PNG
+    - assets/selador.PNG
+    - assets/saco_grafiatto_rustico.PNG
+    - assets/saco_massa_pva.PNG
+    - assets/latex_eco.PNG
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:tintex/ConfirmarPedido.dart';
 import 'package:tintex/model/Pedido.dart';
+import 'package:tintex/model/Produto.dart';
+import 'package:tintex/model/SolicitarPedido.dart';
 import 'package:tintex/model/Usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
@@ -24,12 +26,22 @@ class _RealizarPedidoState extends State<RealizarPedido> {
   TextEditingController _Latex_Economico = TextEditingController();
   TextEditingController _Grafiato_Acrilico = TextEditingController();
   TextEditingController _Textura_Acrilica = TextEditingController();
-  final double _widthTextField                   = 55;
-  final double _heightTextField                  = 30;
-  RealizarPedido realizarPedido = new RealizarPedido();
-  Usuario  usuario              = new Usuario();
-  String _Acao        = 'I'; // I significa Incluir novo registro
+  final double _widthTextField = 55;
+  final double _heightTextField = 30;
+  Usuario usuario = new Usuario();
+  String _Acao = 'I'; // I significa Incluir novo registro
+  bool result = false;
+  var results;
+  var qualquer;
+  var results_massa_pva;
+  var results_latex_eco;
+  var results_grafiato_acri;
+  var results_selador_acri;
+  var results_textura_acri;
+  var results_massa_acri;
 
+  bool resultado = false;
+  var resultado_pva;
 
 
   int anoAtual = DateTime.now().year;
@@ -45,258 +57,182 @@ class _RealizarPedidoState extends State<RealizarPedido> {
 
   final format = DateFormat("dd/MM/yyyy");
 
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    SolicitarPedido solicitarPedido = SolicitarPedido();
+    Produto produto = Produto();
     return Scaffold(body: ScopedModelDescendant<Usuario>(
       builder: (context, child, model) {
         return Column(
+
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Row(
-              //ROW 1
-              children: [
-                Container(
-                  child: Text("QTD"),
-                ),
-                Container(
-                  child: Text("Descriminação"),
-                ),
-                Container(
-                  child: Text("Vl Unitário"),
-                ),
-                Container(
-                  child: Text("Total"),
-                ),
-              ],
+
+          Expanded(
+            child: FutureBuilder<QuerySnapshot>(
+              future: Firestore.instance.collection('produtos').getDocuments(),
+              builder: (context, snapshot){
+                if(snapshot.hasData) {
+                  return ListView.builder(
+                      itemCount: snapshot.data.documents.length,
+                      itemBuilder: (context, index){
+                        String path;
+                        String pathMassaPVA   = 'assets/saco_massa_pva.PNG';
+                        String pathMassaAcri  = 'assets/saco_massa_acrilica.PNG';
+                        String pathSela       = 'assets/selador.PNG';
+                        String pathGrafi      = 'assets/saco_grafiatto_rustico.PNG';
+                        String pathLatex      = 'assets/latex_eco.PNG';
+                        String pathTextura    = 'assets/saco_textura_acrilica.PNG';
+                        TextEditingController controller;
+
+                        switch (snapshot.data.documents[index]['label']){
+                          case 'massa_pva':{
+                            TextEditingController _Massa_PVA = TextEditingController();
+                            controller = _Massa_PVA;
+                            produto.Preco_Massa_PVA = double.parse(snapshot.data.documents[index]['preco_produto']);
+                            path  = pathMassaPVA;
+                          }break;
+                          case 'massa_acri':{
+                            TextEditingController _Massa_Acrilica = TextEditingController();
+                            controller = _Massa_Acrilica;
+                            produto.Preco_Massa_Acrilica = double.parse(snapshot.data.documents[index]['preco_produto']);
+                            path  = pathMassaAcri;
+                          }break;
+                          case 'selador_acri':{
+                            TextEditingController _Selador_Acrilico = TextEditingController();
+                            controller = _Selador_Acrilico;
+                            produto.Preco_Selador_Acrilico = double.parse(snapshot.data.documents[index]['preco_produto']);
+                            path  = pathSela;
+                          }break;
+                          case 'latex_eco':{
+                            TextEditingController _Latex_Economico = TextEditingController();
+                            controller = _Latex_Economico;
+                            produto.Preco_Latex_Economico = double.parse(snapshot.data.documents[index]['preco_produto']);
+                            path  = pathLatex;
+                          }break;
+                          case 'grafiato_acri':{
+                            TextEditingController _Grafiato_Acrilico = TextEditingController();
+                            controller = _Grafiato_Acrilico;
+                            produto.Preco_Grafiato_Acrilico = double.parse(snapshot.data.documents[index]['preco_produto']);
+                            path  = pathGrafi;
+                          }break;
+                          case 'textura_acri':{
+                            TextEditingController _Textura_Acrilica = TextEditingController();
+                            controller = _Textura_Acrilica;
+                            produto.Preco_Textura_Acrilica = double.parse(snapshot.data.documents[index]['preco_produto']);
+                            path  = pathTextura;
+                          }break;
+                        }
+
+                        return InkWell(
+                            child: Card(
+                                child: Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                      flex: 2,
+                                      child: Container(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Column(
+                                          children: <Widget>[
+                                            Text(
+                                              snapshot.data.documents[index]['nome_produto'],
+                                              style: TextStyle(fontWeight: FontWeight.w500),
+                                            ),
+                                            Image(
+                                              image: AssetImage(path),
+                                              fit: BoxFit.cover,
+                                              height: 100.0,
+                                            ),
+                                          ],
+                                        )
+
+                                      ),
+
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: Container(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Column(
+                                          children: <Widget>[
+                                            Text(
+                                              "Quantidade",
+                                              style: TextStyle(
+                                                  color: Theme.of(context).primaryColor,
+                                                  fontSize: 17.0,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            TextFormField(
+                                              onChanged: (Text){
+                                                switch (snapshot.data.documents[index]['label']){
+                                                  case 'massa_pva':{
+                                                    solicitarPedido.Massa_PVA = controller.text;
+                                                  }break;
+                                                  case 'massa_acri':{
+                                                    solicitarPedido.Massa_Acrilica = controller.text;
+                                                  }break;
+                                                  case 'selador_acri':{
+                                                    solicitarPedido.Selador_Acrilico = controller.text;
+                                                  }break;
+                                                  case 'latex_eco':{
+                                                    solicitarPedido.Latex_Economico = controller.text;
+                                                  }break;
+                                                  case 'grafiato_acri':{
+                                                    solicitarPedido.Grafiato_Acrilico = controller.text;
+                                                  }break;
+                                                  case 'textura_acri':{
+                                                    solicitarPedido.Textura_Acrilica = controller.text;
+                                                  }break;
+                                                }
+
+                                              },
+                                              inputFormatters: <TextInputFormatter>[
+                                                WhitelistingTextInputFormatter.digitsOnly
+                                              ],
+                                              keyboardType: TextInputType.number,
+                                              textAlign: TextAlign.center,
+                                              maxLength: 3,
+                                              decoration: new InputDecoration(
+                                                hintText: '0',
+                                                border: InputBorder.none,
+                                                counterText: '',
+                                              ),
+                                              controller: controller,
+                                            ),
+
+
+                                            Text(
+                                              "R\$ ${snapshot.data.documents[index]['preco_produto']}",
+                                              style: TextStyle(
+                                                  color: Theme.of(context).primaryColor,
+                                                  fontSize: 17.0,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+
+                                  ],
+                                )
+                            )
+                        );
+                      }
+                  );
+                }else{
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
             ),
-            Row(//ROW 2
-                children: [
-                  new Container(
-                    width: _widthTextField,
-                    height: _heightTextField,
-                    decoration: new BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      border: new Border.all(
-                        color: Colors.black,
-                        width: 1.0,
-                      ),
-                    ),
-                    child: new TextFormField(
-                      inputFormatters:  <TextInputFormatter>[
-                        WhitelistingTextInputFormatter.digitsOnly
-                      ],
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.center,
-                      maxLength: 3,
-                      decoration: new InputDecoration(
-                        hintText: '0',
-                        border: InputBorder.none,
-                        counterText: '',
-                      ),
-                      controller: _Massa_PVA,
-                    ),
-                  ),
-
-                  Container(
-                    child: Text("Massa PVA saco 15kg"),
-                  ),
-                  Container(
-                    child: Text("R\$15,90"),
-                  ),
-                  Container(
-                    child: Text("R\$15,90"),
-                  ),
-                ]),
-            Row(//ROW 2
-                children: [
-                  new Container(
-                    width: _widthTextField,
-                    height: _heightTextField,
-                    decoration: new BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      border: new Border.all(
-                        color: Colors.black,
-                        width: 1.0,
-                      ),
-                    ),
-                    child: new TextFormField(
-                      inputFormatters:  <TextInputFormatter>[
-                        WhitelistingTextInputFormatter.digitsOnly
-                      ],
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.center,
-                      maxLength: 3,
-                      decoration: new InputDecoration(
-                        hintText: '0',
-                        border: InputBorder.none,
-                        counterText: '',
-                      ),
-                      controller: _Massa_Acrilica,
-                    ),
-                  ),
-
-                  Container(
-                    child: Text("Massa Acrilica"),
-                  ),
-                  Container(
-                    child: Text("R\$15,90"),
-                  ),
-                  Container(
-                    child: Text("R\$15,90"),
-                  ),
-                ]),
-            Row(//ROW 2
-                children: [
-                  new Container(
-                    width: _widthTextField,
-                    height: _heightTextField,
-                    decoration: new BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      border: new Border.all(
-                        color: Colors.black,
-                        width: 1.0,
-                      ),
-                    ),
-                    child: new TextFormField(
-                      inputFormatters:  <TextInputFormatter>[
-                        WhitelistingTextInputFormatter.digitsOnly
-                      ],
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.center,
-                      maxLength: 3,
-                      decoration: new InputDecoration(
-                        hintText: '0',
-                        border: InputBorder.none,
-                        counterText: '',
-                      ),
-                      controller: _Selador_Acrilico,
-                    ),
-                  ),
-
-                  Container(
-                    child: Text("Latex Economico"),
-                  ),
-                  Container(
-                    child: Text("R\$15,90"),
-                  ),
-                  Container(
-                    child: Text("R\$15,90"),
-                  ),
-                ]),
-            Row(//ROW 2
-                children: [
-                  new Container(
-                    width: _widthTextField,
-                    height: _heightTextField,
-                    decoration: new BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      border: new Border.all(
-                        color: Colors.black,
-                        width: 1.0,
-                      ),
-                    ),
-                    child: new TextFormField(
-                      inputFormatters:  <TextInputFormatter>[
-                        WhitelistingTextInputFormatter.digitsOnly
-                      ],
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.center,
-                      maxLength: 3,
-                      decoration: new InputDecoration(
-                        hintText: '0',
-                        border: InputBorder.none,
-                        counterText: '',
-                      ),
-                      controller: _Latex_Economico,
-                    ),
-                  ),
-
-                  Container(
-                    child: Text("Grafiato Acrilico"),
-                  ),
-                  Container(
-                    child: Text("R\$15,90"),
-                  ),
-                  Container(
-                    child: Text("R\$15,90"),
-                  ),
-                ]),
-            Row(//ROW 2
-                children: [
-                  new Container(
-                    width: _widthTextField,
-                    height: _heightTextField,
-                    decoration: new BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      border: new Border.all(
-                        color: Colors.black,
-                        width: 1.0,
-                      ),
-                    ),
-                    child: new TextFormField(
-                      inputFormatters:  <TextInputFormatter>[
-                        WhitelistingTextInputFormatter.digitsOnly
-                      ],
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.center,
-                      maxLength: 3,
-                      decoration: new InputDecoration(
-                        hintText: '0',
-                        border: InputBorder.none,
-                        counterText: '',
-                      ),
-                      controller: _Grafiato_Acrilico,
-                    ),
-                  ),
-
-                  Container(
-                    child: Text(" Grafiato Acrilico"),
-                  ),
-                  Container(
-                    child: Text("R\$15,90"),
-                  ),
-                  Container(
-                    child: Text("R\$15,90"),
-                  ),
-                ]),
-            Row(//ROW 2
-                children: [
-                  new Container(
-                    width: _widthTextField,
-                    height: _heightTextField,
-                    decoration: new BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      border: new Border.all(
-                        color: Colors.black,
-                        width: 1.0,
-                      ),
-                    ),
-                    child: new TextFormField(
-                      inputFormatters:  <TextInputFormatter>[
-                        WhitelistingTextInputFormatter.digitsOnly
-                      ],
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.center,
-                      maxLength: 3,
-                      decoration: new InputDecoration(
-                        hintText: '0',
-                        border: InputBorder.none,
-                        counterText: '',
-                      ),
-                      controller: _Textura_Acrilica,
-                    ),
-                  ),
-
-                  Container(
-                    child: Text("Textura Acrilica"),
-                  ),
-                  Container(
-                    child: Text("R\$15,90"),
-                  ),
-                  Container(
-                    child: Text("R\$15,90"),
-                  ),
-                ]),
+          ),
 
 
             Padding(
@@ -306,83 +242,79 @@ class _RealizarPedidoState extends State<RealizarPedido> {
                 textColor: Colors.white,
                 padding: EdgeInsets.all(15),
                 child: Text(
-                  "Cadastrar",
-                  style: TextStyle(
-                      fontSize: 20
-                  ),
+                  "Fazer Pedido",
+                  style: TextStyle(fontSize: 20),
                 ),
-                onPressed: (){
-                  _confirmarPedido(model.firebaseUser.uid.toString());
-                 // _validarCampos(model.firebaseUser.uid.toString());
+                onPressed: () {
+                  _confirmarPedido(solicitarPedido, model.firebaseUser.uid.toString(), produto);
+                  // _validarCampos(model.firebaseUser.uid.toString());
                 },
               ),
             ),
           ],
-
-
         );
       },
     ));
   }
 
-// DateFormat(String s) {}
+  void _confirmarPedido(SolicitarPedido solicitarPedido, idUsuario, Produto produto) {
+//    SolicitarPedido solicitarPedido = SolicitarPedido();
 
-  _validarCampos(String idUsuarioLogado) {
-    String Massa_PVA          = _Massa_PVA.text;
-    String Massa_Acrilica     = _Massa_Acrilica.text;
-    String Selador_Acrilico   = _Selador_Acrilico.text;
-    String Latex_Economico    = _Latex_Economico.text;
-    String Grafiato_Acrilico  = _Grafiato_Acrilico.text;
-    String Textura_Acrilica   = _Textura_Acrilica.text;
-    String Acao               = _Acao;
-    String apresentarRegistro = '1';
-//    String idUsuarioLogado        = uid;
+    if (solicitarPedido.Massa_PVA == null || solicitarPedido.Massa_PVA.isEmpty)
+      solicitarPedido.Massa_PVA = '0';
+    if (solicitarPedido.Massa_Acrilica == null || solicitarPedido.Massa_Acrilica.isEmpty)
+      solicitarPedido.Massa_Acrilica = '0';
+    if (solicitarPedido.Selador_Acrilico == null || solicitarPedido.Selador_Acrilico.isEmpty)
+      solicitarPedido.Selador_Acrilico = '0';
+    if (solicitarPedido.Latex_Economico == null || solicitarPedido.Latex_Economico.isEmpty)
+      solicitarPedido.Latex_Economico = '0';
+    if (solicitarPedido.Grafiato_Acrilico == null || solicitarPedido.Grafiato_Acrilico.isEmpty)
+      solicitarPedido.Grafiato_Acrilico = '0';
+    if (solicitarPedido.Textura_Acrilica == null || solicitarPedido.Textura_Acrilica.isEmpty)
+      solicitarPedido.Textura_Acrilica = '0';
 
-    //criando objeto Terreno
-    Pedido pedido = Pedido(
-        Massa_Acrilica,
-        Selador_Acrilico,
-        Massa_PVA,
-        Textura_Acrilica,
-        Latex_Economico,
-        Grafiato_Acrilico,
-        apresentarRegistro);
+    solicitarPedido.apresentarRegistro = '1';
 
-    pedido.cadastrarPedido(pedido, idUsuarioLogado);
 
-    _Massa_PVA.text = "0";
-    _Massa_Acrilica.text = "0";
-    _Selador_Acrilico.text = "0";
-    _Latex_Economico.text = "0";
-    _Grafiato_Acrilico.text = "0";
-    _Textura_Acrilica.text = "0";
+    if(solicitarPedido.Textura_Acrilica == '0'    && solicitarPedido.Grafiato_Acrilico == '0'
+        && solicitarPedido.Latex_Economico == '0' && solicitarPedido.Selador_Acrilico == '0'
+        && solicitarPedido.Massa_Acrilica == '0'  && solicitarPedido.Massa_PVA == '0'){
+
+        _showEmptyFields();
+    }else {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) =>
+              ConfirmarPedido(solicitarPedido, produto, idUsuario)));
+    }
+    }
+
+
+  void _showEmptyFields() {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Favor informar a quantidade de pelo menos um produto."),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("OK"),
+              onPressed: (){
+                Navigator.of(context).pop();
+              },
+            ),
+
+          ],
+        );
+      },
+    );
   }
 
 
-  void _confirmarPedido(idUsuario) {
-    String Massa_PVA          = _Massa_PVA.text;
-    String Massa_Acrilica     = _Massa_Acrilica.text;
-    String Selador_Acrilico   = _Selador_Acrilico.text;
-    String Latex_Economico    = _Latex_Economico.text;
-    String Grafiato_Acrilico  = _Grafiato_Acrilico.text;
-    String Textura_Acrilica   = _Textura_Acrilica.text;
-    String apresentarRegistro = '1';
-
-    Pedido pedido = new Pedido(
-        Massa_Acrilica,
-        Selador_Acrilico,
-        Massa_PVA,
-        Textura_Acrilica,
-        Latex_Economico,
-        Grafiato_Acrilico,
-        apresentarRegistro );
 
 
-    Navigator.of(context).push(MaterialPageRoute(
-
-        builder: (context) =>
-            ConfirmarPedido(pedido, idUsuario)));
-  }
 
   TextEditingController get Massa_Acrilica => _Massa_Acrilica;
 

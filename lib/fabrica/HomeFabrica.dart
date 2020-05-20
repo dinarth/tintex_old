@@ -93,14 +93,14 @@ class _HomeFabricaState extends State<HomeFabrica> with SingleTickerProviderStat
               body:ListarProdutos(),
             ),
 
-            Scaffold(
-              appBar: AppBar(
-                title: Text('Cadastrar Produto'),
-                centerTitle: true,
-              ),
-              drawer: CustomDrawerFabrica(_pageController),
-              body: CadastrarProduto(),
-            ),
+//            Scaffold(
+//              appBar: AppBar(
+//                title: Text('Cadastrar Produto'),
+//                centerTitle: true,
+//              ),
+//              drawer: CustomDrawerFabrica(_pageController),
+//              body: CadastrarProduto(),
+//            ),
         ],
 
         );
@@ -112,13 +112,4 @@ class _HomeFabricaState extends State<HomeFabrica> with SingleTickerProviderStat
   }
 
 
-  void _sair() {
-    Usuario usuario = new Usuario();
-    usuario.signOut();
-
-    Future.delayed(Duration(milliseconds: 0)).then((_) {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => LoginScreen()));
-    });
-  }
 }

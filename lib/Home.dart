@@ -68,7 +68,8 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 centerTitle: true,
               ),
               drawer: CustomDrawer(_pageController),
-              body:RealizarPedido(),
+              body: RealizarPedido() ,
+
             ),
         ],
         );

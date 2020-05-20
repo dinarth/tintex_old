@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:tintex/fabrica/ListarProdutos.dart';
 import 'package:tintex/model/Pedido.dart';
 import 'package:tintex/model/Produto.dart';
 import 'package:tintex/model/SolicitarPedido.dart';
@@ -32,6 +33,7 @@ class _AlterarProdutoState extends State<AlterarProduto> {
   int anoAtual = DateTime.now().year;
   TextEditingController _nome_produto    = TextEditingController();
   TextEditingController _preco_produto   = TextEditingController();
+  String label;
 
 
 
@@ -43,9 +45,7 @@ class _AlterarProdutoState extends State<AlterarProduto> {
   void _carregarCampos(){
 
     _nome_produto.text                = produto.nome_produto;
-    _preco_produto.text              = produto.preco_produto;
-
-
+    _preco_produto.text               = produto.preco_produto;
   }
 
   String currencyConverse(String valorMoeda){
@@ -72,7 +72,7 @@ class _AlterarProdutoState extends State<AlterarProduto> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Atualizar Pedido"),
+          title: Text("Atualizar Produto"),
           centerTitle: true,
         ),
         body: ScopedModelDescendant<Usuario>(
@@ -108,7 +108,6 @@ class _AlterarProdutoState extends State<AlterarProduto> {
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
                       decoration: new InputDecoration(
-                        labelText: '0',
                         border: InputBorder.none,
                       ),
                       controller: _preco_produto,
@@ -122,17 +121,10 @@ class _AlterarProdutoState extends State<AlterarProduto> {
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
                       decoration: new InputDecoration(
-                        labelText: '0',
                         border: InputBorder.none,
                       ),
-                      controller: _preco_produto,
+                      controller: _nome_produto,
                     ),
-                  ),
-                  Container(
-                    child: Text("R\$15,90"),
-                  ),
-                  Container(
-                    child: Text("R\$15,90"),
                   ),
                 ]),
 
@@ -143,13 +135,18 @@ class _AlterarProdutoState extends State<AlterarProduto> {
                 textColor: Colors.white,
                 padding: EdgeInsets.all(15),
                 child: Text(
-                  "Atualizar Pedido",
+                  "Atualizar Produto",
                   style: TextStyle(
                       fontSize: 20
                   ),
                 ),
                 onPressed: (){
-  //                _confirmarAtualizarPedidoFabrica(solicitarPedido ,model.firebaseUser.uid.toString());
+                  print(produto.id);
+                  print(produto.nome_produto);
+                  print(produto.preco_produto);
+                  print(_preco_produto.text);
+                  confirmarAtualizarProduto();
+
                   // _validarCampos(model.firebaseUser.uid.toString());
                 },
               ),
@@ -161,12 +158,66 @@ class _AlterarProdutoState extends State<AlterarProduto> {
       },
     ));
   }
-  void _confirmarAtualizarPedidoFabrica(SolicitarPedido solicitarPedido, idUsuario) {
 
 
-    Navigator.of(context).push(MaterialPageRoute(
+  void confirmarAtualizarProduto() {
+    if(produto.preco_produto != _preco_produto.text) {
+      produto.apresentar_registro = '1';
+      produto.preco_produto = _preco_produto.text;
+      produto.atualizarProduto(produto);
+      _showDialog();
+    }else{
+      _showDialogErro();
+    }
 
-        builder: (context) =>
-            ConfirmarAtualizarPedidoFabrica(solicitarPedido, idUsuario)));
   }
+
+  void _showDialog() {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Preço alterado com sucesso."),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Ok"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+  void _showDialogErro() {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Não houve alteração do preço. Favor confirmar."),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Ok"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
 }

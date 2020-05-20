@@ -5,6 +5,7 @@ import 'package:tintex/MeusPedidos.dart.';
 import 'package:tintex/RealizarPedido.dart';
 import 'package:tintex/model/Pedido.dart';
 import 'package:tintex/model/Produto.dart';
+import 'package:tintex/model/SolicitarPedido.dart';
 import 'package:tintex/model/Usuario.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,128 +15,62 @@ import 'package:intl/intl.dart';
 import 'Home.dart';
 
 class ConfirmarAtualizarPedido extends StatefulWidget {
-  final Pedido pedido;
+  final SolicitarPedido solicitarPedido;
   final String idUsuario;
+  final Produto produto;
 
-
-  ConfirmarAtualizarPedido(this.pedido, this.idUsuario);
+  ConfirmarAtualizarPedido(this.solicitarPedido, this.idUsuario, this.produto);
 
   @override
-  _ConfirmarAtualizarPedidoState createState() => _ConfirmarAtualizarPedidoState(pedido, idUsuario);
+  _ConfirmarAtualizarPedidoState createState() => _ConfirmarAtualizarPedidoState(solicitarPedido, idUsuario, produto);
 }
 
 class _ConfirmarAtualizarPedidoState extends State<ConfirmarAtualizarPedido> {
-  final Pedido pedido;
+  final SolicitarPedido solicitarPedido;
   final String idUsuario;
+  final Produto produto;
   Firestore db                = Firestore.instance;
-  Produto produto             = new Produto();
   String _valorTotalDoPedido;
+  String _qtdTotalPrd;
 
+  String pathMassaPVA     = 'assets/saco_massa_pva.PNG';
+  String pathMassaAcri    = 'assets/saco_massa_acrilica.PNG';
+  String pathSela         = 'assets/selador.PNG';
+  String pathGrafi        = 'assets/saco_grafiatto_rustico.PNG';
+  String pathLatex        = 'assets/latex_eco.PNG';
+  String pathTextura      = 'assets/saco_textura_acrilica.PNG';
 
+  double _heigth = 60.0;
+  double _width = 40.0;
 
-  String get valorTotalDoPedido => _valorTotalDoPedido;
-
-  set valorTotalDoPedido(String value) {
-    _valorTotalDoPedido = value;
-  }
-
-  _ConfirmarAtualizarPedidoState(this.pedido, this.idUsuario);
+  _ConfirmarAtualizarPedidoState(this.solicitarPedido, this.idUsuario, this.produto);
 
   valorTotalPedido(){
     double valorTotal;
-    valorTotal = double.parse(pedido.textura_Acrilica)     * produto.Preco_Textura_Acrilica;
-    valorTotal += double.parse(pedido.grafiato_Acrilico)   * produto.Preco_Grafiato_Acrilico;
-    valorTotal += double.parse(pedido.latex_Economico)     * produto.Preco_Latex_Economico;
-    valorTotal += double.parse(pedido.massa_Acrilica)      * produto.Preco_Massa_Acrilica;
-    valorTotal += double.parse(pedido.massa_PVA)           * produto.Preco_Massa_PVA;
+    int qtdTotalPrd;
+    valorTotal = double.parse(solicitarPedido.Textura_Acrilica)     * produto.Preco_Textura_Acrilica;
+    valorTotal += double.parse(solicitarPedido.Grafiato_Acrilico)   * produto.Preco_Grafiato_Acrilico;
+    valorTotal += double.parse(solicitarPedido.Latex_Economico)     * produto.Preco_Latex_Economico;
+    valorTotal += double.parse(solicitarPedido.Massa_Acrilica)      * produto.Preco_Massa_Acrilica;
+    valorTotal += double.parse(solicitarPedido.Massa_PVA)           * produto.Preco_Massa_PVA;
+    valorTotal += double.parse(solicitarPedido.Selador_Acrilico)    * produto.Preco_Selador_Acrilico;
+
+    qtdTotalPrd = int.parse(solicitarPedido.Textura_Acrilica) + int.parse(solicitarPedido.Grafiato_Acrilico) + int.parse(solicitarPedido.Latex_Economico) + int.parse(solicitarPedido.Massa_Acrilica) +
+        int.parse(solicitarPedido.Massa_PVA) + int.parse(solicitarPedido.Selador_Acrilico);
 
     NumberFormat formatar = NumberFormat("00.00");
     this.valorTotalDoPedido = formatar.format(valorTotal);
 
-
+    this.qtdTotalPrd = qtdTotalPrd.toString();
   }
 
-
-  int mandar_push(data_do_pagamento){
-    var now = new DateTime.now();
-    List<String> dia_pagamento = data_do_pagamento.split("/");
-    //String dia_atual = now.day.toString();
-    if(int.parse(dia_pagamento[0]) - now.day == 1){
-      return 1;
-    }
-    else{
-      return 99;
-    }
-  }
-
-  //===============================NOTIFICAÇÃO==========================//
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      new FlutterLocalNotificationsPlugin();
-  var initializationSettingsAndroid;
-  var initializationSettingsIOS;
-  var initializationSettings;
-
-  void _showNotification() async{
-    await _demoNotification();
-  }
-  Future<void> _demoNotification() async{
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'channel_ID', 'channel name', 'channel description',
-      importance:  Importance.Max,
-      priority: Priority.High,
-      ticker: 'test ticker');
-
-    var IOSChannelSpecifics = IOSNotificationDetails();
-    var platformChannelSpecifics = NotificationDetails(
-      androidPlatformChannelSpecifics, IOSChannelSpecifics);
-
-    await flutterLocalNotificationsPlugin.show(0, 'Vai dar o caLOTE?',
-    'O dia do pagamento do seu lote está proximo', platformChannelSpecifics,
-    payload: 'test oayload');
-  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    initializationSettingsAndroid = new AndroidInitializationSettings('icone_app');
-    initializationSettingsIOS = new IOSInitializationSettings(
-      onDidReceiveLocalNotification: onDidReceiveLocalNotification);
-    initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-    onSelectNotification: onSelectNotification);
-
 
     valorTotalPedido();
-  }
-  Future onSelectNotification(String payload) async{
-    if(payload != null){
-      debugPrint('Notification payload: $payload');
-    }
-    await Navigator.push(context,
-    new MaterialPageRoute(builder: (context) => new MeusPedidos()));
-  }
-
-
-  Future onDidReceiveLocalNotification(int id, String title, String body, String payload) async{
-    await showDialog(
-      context: context,
-      builder: (BuildContext context)=>CupertinoAlertDialog(
-        title: Text(title),
-        content: Text(body),
-        actions: <Widget>[
-          CupertinoDialogAction(
-            isDefaultAction: true,
-            child: Text('Ok'),
-            onPressed: () async{
-          Navigator.of(context, rootNavigator:true).pop();
-          await Navigator.push(context,
-           MaterialPageRoute(builder: (context)=>MeusPedidos()));
-            },
-          )
-        ],
-      )
-    );
   }
 
 
@@ -143,7 +78,8 @@ class _ConfirmarAtualizarPedidoState extends State<ConfirmarAtualizarPedido> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Confirmar Pedido"),
+          centerTitle: true,
+          title: Text("Atualização do Pedido"),
         ),
         body: Container(
             child: SingleChildScrollView(
@@ -152,7 +88,7 @@ class _ConfirmarAtualizarPedidoState extends State<ConfirmarAtualizarPedido> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     Text(
-                      "Confirmação do Pedido",
+                      "Confirmação da atualização do Pedido",
                       textAlign: TextAlign.start,
                       style: TextStyle(fontWeight: FontWeight.w500),
                     ),
@@ -162,51 +98,107 @@ class _ConfirmarAtualizarPedidoState extends State<ConfirmarAtualizarPedido> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text("Valor total do pedido:"),
-                        Text("${valorTotalDoPedido.toString()}")
+
+                        Text("Valor total do pedido: R\$ ${valorTotalDoPedido.toString()}"),
+                        Text(""),
+                        Text("QTD"),
                       ],
                     ),
                     Divider(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text("Massa Acrílica:"),
-                        Text("${pedido.massa_Acrilica}")
+                        Image(
+                          image: AssetImage(pathMassaAcri),
+                          fit: BoxFit.cover,
+                          height: _heigth,
+                          width: _width,
+                        ),
+                        Text("Massa Acrílica:", textAlign: TextAlign.right,),
+                        Text("${solicitarPedido.Massa_Acrilica}")
                       ],
                     ),
                     Divider(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text("Selador Acrílico: "),
-                        Text("${pedido.selador_Acrilico}")
+                        Image(
+                          image: AssetImage(pathSela),
+                          fit: BoxFit.cover,
+                          height: _heigth,
+                          width: _width,
+                        ),
+                        Text("Selador Acrílico: ", textAlign: TextAlign.right,),
+                        Text("${solicitarPedido.Selador_Acrilico}")
                       ],
                     ),
                     Divider(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text("Grafiato Acrílico: "),
-                        Text("${pedido.grafiato_Acrilico}")
+                        Image(
+                          image: AssetImage(pathGrafi),
+                          fit: BoxFit.cover,
+                          height: _heigth,
+                          width: _width,
+                        ),
+                        Text("Grafiato Acrílico: ", textAlign: TextAlign.right,),
+                        Text("${solicitarPedido.Grafiato_Acrilico}")
                       ],
                     ),
                     Divider(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text("Textura Acrílica: "),
-                        Text("${pedido.textura_Acrilica}")
+                        Image(
+                          image: AssetImage(pathTextura),
+                          fit: BoxFit.cover,
+                          height: _heigth,
+                          width: _width,
+                        ),
+                        Text("Textura Acrílica: ", textAlign: TextAlign.right,),
+                        Text("${solicitarPedido.Textura_Acrilica}")
                       ],
                     ),
                     Divider(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text("Latex Econômico: "),
-                        Text("${pedido.latex_Economico}")
+                        Image(
+                          image: AssetImage(pathLatex),
+                          fit: BoxFit.cover,
+                          height: _heigth,
+                          width: _width,
+                        ),
+                        Text("Latex Econômico: ", textAlign: TextAlign.right,),
+                        Text("${solicitarPedido.Latex_Economico}")
+                      ],
+                    ),
+                    Divider(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Image(
+                          image: AssetImage(pathMassaPVA),
+                          fit: BoxFit.cover,
+                          height: _heigth,
+                          width: _width,
+                        ),
+                        Text("Latex Econômico: ", textAlign: TextAlign.right,),
+                        Text("${solicitarPedido.Massa_PVA}")
                       ],
                     ),
 
+                    Divider(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+
+                        Text(""),
+                        Text("Total itens:", textAlign: TextAlign.right, style: TextStyle(fontSize: 18),),
+                        Text("${qtdTotalPrd}",style: TextStyle(fontSize: 18),),
+                      ],
+                    ),
                     Divider(),
                     Padding(
                       padding: EdgeInsets.only(top: 10),
@@ -215,13 +207,13 @@ class _ConfirmarAtualizarPedidoState extends State<ConfirmarAtualizarPedido> {
                         textColor: Colors.white,
                         padding: EdgeInsets.all(15),
                         child: Text(
-                          "Confirmar Pedido",
+                          "Atualizar Pedido",
                           style: TextStyle(
                               fontSize: 20
                           ),
                         ),
                         onPressed: (){
-                          _validarCampos(idUsuario);
+                          _validarCampos(solicitarPedido);
                         },
                       ),
                     ),
@@ -235,25 +227,27 @@ class _ConfirmarAtualizarPedidoState extends State<ConfirmarAtualizarPedido> {
   }
 
 
-  _validarCampos(String idUsuarioLogado) {
+  _validarCampos(SolicitarPedido solicitarPedido) {
+    solicitarPedido.qtd_total_itens = qtdTotalPrd;
+    solicitarPedido.valor_total     = valorTotalDoPedido;
 
-    pedido.alterarPedido(pedido, idUsuarioLogado, pedido.id);
+    solicitarPedido.alterarPedido(solicitarPedido);
 
-    String numeroPedido = pedido.numero_Pedido;
+    String numeroPedido = solicitarPedido.numero_Pedido;
 
-    _showDialog(idUsuarioLogado, numeroPedido);
+    _showDialog(numeroPedido);
 
 
   }
 
-  void _showDialog(idUsuarioLogado, idPedido) {
+  void _showDialog(numeroPedido) {
     // flutter defined function
     showDialog(
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: new Text("Pedido " + idPedido + " alterado com sucesso."),
+          title: new Text("Pedido " + numeroPedido + " alterado com sucesso."),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
           new FlatButton(
@@ -273,21 +267,18 @@ class _ConfirmarAtualizarPedidoState extends State<ConfirmarAtualizarPedido> {
 
 
 
-  String _buildTerrenoText(DocumentSnapshot snapshot) {
-    String text = "Título: \n";
-    for (DocumentSnapshot t in snapshot.data['titulo']) {
-      text += "${t['titulo']}";
-    }
-    text += "Parcela: R\$ ${snapshot.data['vlParcela'].toStringAsFixed(2)}";
-    return text;
+
+
+
+  String get valorTotalDoPedido => _valorTotalDoPedido;
+
+  set valorTotalDoPedido(String value) {
+    _valorTotalDoPedido = value;
   }
 
-  String _buildTerrenoText2(DocumentSnapshot snapshot) {
-    String text = "Título: \n";
-    for (LinkedHashMap t in snapshot.data['terreno']) {
-      text += "${t['titulo']}";
-    }
-    text += "Parcela: R\$ ${snapshot.data['vlParcela'].toStringAsFixed(2)}";
-    return text;
+  String get qtdTotalPrd => _qtdTotalPrd;
+
+  set qtdTotalPrd(String value) {
+    _qtdTotalPrd = value;
   }
 }

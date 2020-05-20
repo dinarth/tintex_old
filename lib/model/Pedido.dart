@@ -140,11 +140,6 @@ class Pedido{
 
 
 
-//  String get id => _id;
-//
-//  set id(String value) {
-//    _id = value;
-//  }
 
 
   String get massa_Acrilica => _Massa_Acrilica;

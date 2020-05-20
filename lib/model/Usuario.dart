@@ -153,4 +153,6 @@ class Usuario extends Model {
     return uid;
   }
 
+
+
 }

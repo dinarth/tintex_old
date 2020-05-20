@@ -94,9 +94,10 @@ class _ListarProdutosState extends State<ListarProdutos> {
                     DocumentSnapshot item = produtos[index];
 
                     Produto produto = Produto();
-                    produto.nome_produto = item['nome_produto'];
-                    produto.preco_produto = item['preco_produto'];
-                    produto.id = item['id_produto'];
+                    produto.nome_produto       = item['nome_produto'];
+                    produto.preco_produto      = item['preco_produto'];
+                    produto.label              = item['label'];
+                    produto.id                 = item.documentID;
 
                     return Card(
                       child: ListTile(
@@ -116,10 +117,7 @@ class _ListarProdutosState extends State<ListarProdutos> {
                               },
                               child: Padding(
                                 padding: EdgeInsets.only(right: 0),
-                                child: Icon(
-                                  Icons.delete_forever,
-                                  color: Colors.red,
-                                ),
+
                               ),
                             )
                           ],
