@@ -1,11 +1,15 @@
+import 'package:flutter/cupertino.dart';
 import 'package:tintex/login_screen.dart';
 import 'package:tintex/model/Usuario.dart';
 import 'package:tintex/tiles/drawer_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CustomDrawer extends StatelessWidget {
   final PageController pageController;
+
+  String theSbDev = 'http://thesbdev.com';
 
   CustomDrawer(this.pageController);
 
@@ -47,7 +51,6 @@ class CustomDrawer extends StatelessWidget {
                         bottom: 0.0,
                         child: ScopedModelDescendant<Usuario>(
                           builder: (context, child, model) {
-                            //print(model.userData['nome']);
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
@@ -93,6 +96,41 @@ class CustomDrawer extends StatelessWidget {
               Divider(),
               DrawerTile(Icons.list, "Listar Pedidos", pageController, 0),
               DrawerTile(Icons.add, "Realizar Pedido", pageController, 1),
+              Divider(),
+              DrawerTile(Icons.edit, "Minha Conta", pageController, 2),
+              SizedBox(height: 215,),
+
+
+              Row(
+
+                mainAxisAlignment: MainAxisAlignment.center,
+
+                children: <Widget>[
+
+                  GestureDetector(
+                  child: Image.asset('assets/logo_size_invert.jpg',
+                  height: 50,
+                  width: 50,
+                  ),
+                    onTap: ()async{
+                    await launch(theSbDev);
+                    },
+                  ),
+
+                ],
+              ),
+              GestureDetector(
+                child: Text("thesbdev.com",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 12.0,
+                      fontWeight: FontWeight.bold),
+                ),
+                onTap: ()async{
+                  await launch(theSbDev);
+                },
+              ),
+
             ],
           )
         ],

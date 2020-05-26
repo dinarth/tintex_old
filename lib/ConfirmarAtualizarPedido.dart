@@ -1,15 +1,9 @@
-import 'dart:collection';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tintex/MeusPedidos.dart.';
-import 'package:tintex/RealizarPedido.dart';
-import 'package:tintex/model/Pedido.dart';
+import 'package:tintex/helper/Formatador.dart';
 import 'package:tintex/model/Produto.dart';
 import 'package:tintex/model/SolicitarPedido.dart';
-import 'package:tintex/model/Usuario.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 
 import 'Home.dart';
@@ -26,6 +20,7 @@ class ConfirmarAtualizarPedido extends StatefulWidget {
 }
 
 class _ConfirmarAtualizarPedidoState extends State<ConfirmarAtualizarPedido> {
+  Formatador formatador = Formatador();
   final SolicitarPedido solicitarPedido;
   final String idUsuario;
   final Produto produto;
@@ -99,7 +94,7 @@ class _ConfirmarAtualizarPedidoState extends State<ConfirmarAtualizarPedido> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
 
-                        Text("Valor total do pedido: R\$ ${valorTotalDoPedido.toString()}"),
+                        Text("Valor total do pedido: R\$ ${formatador.currencyConverse(valorTotalDoPedido.toString())}"),
                         Text(""),
                         Text("QTD"),
                       ],
@@ -184,7 +179,7 @@ class _ConfirmarAtualizarPedidoState extends State<ConfirmarAtualizarPedido> {
                           height: _heigth,
                           width: _width,
                         ),
-                        Text("Latex Econômico: ", textAlign: TextAlign.right,),
+                        Text("Massa PVA: ", textAlign: TextAlign.right,),
                         Text("${solicitarPedido.Massa_PVA}")
                       ],
                     ),

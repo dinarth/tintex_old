@@ -48,17 +48,6 @@ class _AlterarProdutoState extends State<AlterarProduto> {
     _preco_produto.text               = produto.preco_produto;
   }
 
-  String currencyConverse(String valorMoeda){
-    if (valorMoeda.length >4){
-      valorMoeda = valorMoeda.replaceAll('.', '');
-    }
-    valorMoeda = valorMoeda.replaceAll(',', '.');
-    return valorMoeda;
-  }
-
-
-
-
   @override
   void initState() {
     super.initState();

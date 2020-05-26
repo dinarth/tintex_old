@@ -35,6 +35,13 @@ dependencies:
   shimmer: ^1.0.0
   rxdart: ^0.22.1
 
+  ############FORMATADORES BRASIL###############
+  brasil_fields: ^0.0.9
+  cpfcnpj: ^1.0.3
+
+  ############ABRIR URL##################
+  url_launcher: ^5.4.10
+
   flutter:
     sdk: flutter
 
@@ -48,6 +55,13 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  flutter_launcher_icons: "^0.7.3"
+
+flutter_icons:
+  image_path_android: "assets/logo_tintex_fundo.png"
+  image_path: "assets/logo_tintex_fundo.png"
+  android: true
+  ios: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -72,6 +86,8 @@ flutter:
     - assets/saco_grafiatto_rustico.PNG
     - assets/saco_massa_pva.PNG
     - assets/latex_eco.PNG
+    - assets/logo_tintex_fundo.png
+    - assets/logo_size_invert.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

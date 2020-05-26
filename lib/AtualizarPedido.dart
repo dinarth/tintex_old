@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:tintex/helper/Formatador.dart';
 import 'package:tintex/model/Pedido.dart';
 import 'package:tintex/model/SolicitarPedido.dart';
 import 'package:tintex/model/Usuario.dart';
@@ -29,6 +30,7 @@ class AtualizarPedido extends StatefulWidget {
 }
 
 class _AtualizarPedidoState extends State<AtualizarPedido> {
+  Formatador formatador = Formatador();
   final SolicitarPedido solicitarPedido;
   String idUsuarioLogado;
   Firestore db = Firestore.instance;
@@ -52,14 +54,6 @@ class _AtualizarPedidoState extends State<AtualizarPedido> {
     antigoTexturaAcrilica     = solicitarPedido.Textura_Acrilica;
     antigoLatexEconomico      = solicitarPedido.Latex_Economico;
     antigoGrafiattoAcrilico   = solicitarPedido.Grafiato_Acrilico;
-  }
-
-  String currencyConverse(String valorMoeda) {
-    if (valorMoeda.length > 4) {
-      valorMoeda = valorMoeda.replaceAll('.', '');
-    }
-    valorMoeda = valorMoeda.replaceAll(',', '.');
-    return valorMoeda;
   }
 
 
@@ -247,7 +241,7 @@ class _AtualizarPedidoState extends State<AtualizarPedido> {
                                                 controller: controller,
                                               ),
                                               Text(
-                                                "R\$ ${snapshot.data.documents[index]['preco_produto']}",
+                                                "R\$ ${formatador.currencyConverse(snapshot.data.documents[index]['preco_produto'].toString())}",
                                                 style: TextStyle(
                                                   color: Theme.of(context).primaryColor,
                                                   fontSize: 17.0,
@@ -338,7 +332,6 @@ class _AtualizarPedidoState extends State<AtualizarPedido> {
         _showEmptyFields();
       }else {
         Navigator.of(context).push(MaterialPageRoute(
-
           builder: (context) =>
               ConfirmarAtualizarPedido(solicitarPedido, idUsuario, produto)));
       }

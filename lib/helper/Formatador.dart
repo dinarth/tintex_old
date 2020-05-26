@@ -18,10 +18,10 @@ class Formatador {
 
 
   String currencyConverse(String valorMoeda) {
-    if (valorMoeda.length > 4) {
-      valorMoeda = valorMoeda.replaceAll('.', '');
-    }
-    valorMoeda = valorMoeda.replaceAll(',', '.');
+//    if (valorMoeda.length > 4) {
+//      valorMoeda = valorMoeda.replaceAll('.', '');
+//    }
+    valorMoeda = valorMoeda.replaceAll('.', ',');
     return valorMoeda;
   }
 }

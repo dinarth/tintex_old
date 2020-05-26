@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tintex/MeusPedidos.dart.';
+import 'package:tintex/helper/Formatador.dart';
 import 'package:tintex/model/Pedido.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,9 +23,21 @@ class DetalharPedidoFabrica extends StatefulWidget {
 }
 
 class _DetalharPedidoFabricaState extends State<DetalharPedidoFabrica> {
+  Formatador formatador = Formatador();
   final SolicitarPedido solicitarPedido;
   String statusAlterado;
   Firestore db = Firestore.instance;
+
+  String pathMassaPVA     = 'assets/saco_massa_pva.PNG';
+  String pathMassaAcri    = 'assets/saco_massa_acrilica.PNG';
+  String pathSela         = 'assets/selador.PNG';
+  String pathGrafi        = 'assets/saco_grafiatto_rustico.PNG';
+  String pathLatex        = 'assets/latex_eco.PNG';
+  String pathTextura      = 'assets/saco_textura_acrilica.PNG';
+
+  double _heigth = 60.0;
+  double _width = 40.0;
+
 
   _DetalharPedidoFabricaState(this.solicitarPedido);
 
@@ -41,49 +54,12 @@ class _DetalharPedidoFabricaState extends State<DetalharPedidoFabrica> {
     }
   }
 
-  //===============================NOTIFICAÇÃO==========================//
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      new FlutterLocalNotificationsPlugin();
-  var initializationSettingsAndroid;
-  var initializationSettingsIOS;
-  var initializationSettings;
-
-  void _showNotification() async{
-    await _demoNotification();
-  }
-  Future<void> _demoNotification() async{
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'channel_ID', 'channel name', 'channel description',
-      importance:  Importance.Max,
-      priority: Priority.High,
-      ticker: 'test ticker');
-
-    var IOSChannelSpecifics = IOSNotificationDetails();
-    var platformChannelSpecifics = NotificationDetails(
-      androidPlatformChannelSpecifics, IOSChannelSpecifics);
-
-    await flutterLocalNotificationsPlugin.show(0, 'Vai dar o caLOTE?',
-    'O dia do pagamento do seu lote está proximo', platformChannelSpecifics,
-    payload: 'test oayload');
-  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    initializationSettingsAndroid = new AndroidInitializationSettings('icone_app');
-    initializationSettingsIOS = new IOSInitializationSettings(
-      onDidReceiveLocalNotification: onDidReceiveLocalNotification);
-    initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-    onSelectNotification: onSelectNotification);
-  }
-  Future onSelectNotification(String payload) async{
-    if(payload != null){
-      debugPrint('Notification payload: $payload');
-    }
-    await Navigator.push(context,
-    new MaterialPageRoute(builder: (context) => new MeusPedidos()));
+
   }
 
 
@@ -113,96 +89,156 @@ class _DetalharPedidoFabricaState extends State<DetalharPedidoFabrica> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Tintex"),
+          centerTitle: true,
+          title: Text("Detalhar Pedido"),
         ),
         body: Container(
             child: SingleChildScrollView(
-                padding: EdgeInsets.all(32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Text(
-                      "Detalhamento do Pedido XX",
-                      textAlign: TextAlign.start,
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                    SizedBox(
-                      height: 12.0,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text("Massa Acrílica:"),
-                        Text("${solicitarPedido.Massa_Acrilica}")
-                      ],
-                    ),
-                    Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text("Selador Acrílico: "),
-                        Text("${solicitarPedido.Selador_Acrilico}")
-                      ],
-                    ),
-                    Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text("Grafiato Acrílico: "),
-                        Text("${solicitarPedido.Grafiato_Acrilico}")
-                      ],
-                    ),
-                    Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text("Textura Acrílica: "),
-                        Text("${solicitarPedido.Textura_Acrilica}")
-                      ],
-                    ),
-                    Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text("Latex Econômico: "),
-                        Text("${solicitarPedido.Latex_Economico}")
-                      ],
-                    ),
+              padding: EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
 
-                    Divider(),
-                    Padding(
-                      padding: EdgeInsets.only(top: 10),
-                      child: RaisedButton(
-                        color: Colors.blue,
-                        textColor: Colors.white,
-                        padding: EdgeInsets.all(15),
-                        child: Text(
-                          textoBotao(),
-                          style: TextStyle(
-                              fontSize: 20
-                          ),
-                        ),
-                        onPressed: (){
-                          _validarCampos(solicitarPedido);
-                        },
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+
+                      Text("Valor total do pedido: R\$ ${formatador.currencyConverse(solicitarPedido.valor_total)}"),
+                      Text(""),
+                      Text("QTD"),
+                    ],
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Image(
+                        image: AssetImage(this.pathMassaAcri),
+                        fit: BoxFit.cover,
+                        height: _heigth,
+                        width: _width,
                       ),
-                    ),
+                      Text("Massa Acrílica:", textAlign: TextAlign.right,),
+                      Text("${solicitarPedido.Massa_Acrilica}")
+                    ],
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Image(
+                        image: AssetImage(pathSela),
+                        fit: BoxFit.cover,
+                        height: _heigth,
+                        width: _width,
+                      ),
+                      Text("Selador Acrílico: ", textAlign: TextAlign.right,),
+                      Text("${solicitarPedido.Selador_Acrilico}")
+                    ],
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Image(
+                        image: AssetImage(pathGrafi),
+                        fit: BoxFit.cover,
+                        height: _heigth,
+                        width: _width,
+                      ),
+                      Text("Grafiato Acrílico: ", textAlign: TextAlign.right,),
+                      Text("${solicitarPedido.Grafiato_Acrilico}")
+                    ],
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Image(
+                        image: AssetImage(pathTextura),
+                        fit: BoxFit.cover,
+                        height: _heigth,
+                        width: _width,
+                      ),
+                      Text("Textura Acrílica: ", textAlign: TextAlign.right,),
+                      Text("${solicitarPedido.Textura_Acrilica}")
+                    ],
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Image(
+                        image: AssetImage(pathLatex),
+                        fit: BoxFit.cover,
+                        height: _heigth,
+                        width: _width,
+                      ),
+                      Text("Latex Econômico: ", textAlign: TextAlign.right,),
+                      Text("${solicitarPedido.Latex_Economico}")
+                    ],
+                  ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Image(
+                        image: AssetImage(pathMassaPVA),
+                        fit: BoxFit.cover,
+                        height: _heigth,
+                        width: _width,
+                      ),
+                      Text("Latex Econômico: ", textAlign: TextAlign.right,),
+                      Text("${solicitarPedido.Massa_PVA}")
+                    ],
+                  ),
 
-                      ],
-                    ),
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
 
-                )
+                      Text(""),
+                      Text("Total itens:", textAlign: TextAlign.right, style: TextStyle(fontSize: 18),),
+                      Text("${solicitarPedido.qtd_total_itens}",style: TextStyle(fontSize: 18),),
+                    ],
+                  ),
+                  Divider(),
+                  Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: RaisedButton(
+                      color: Colors.blue,
+                      textColor: Colors.white,
+                      padding: EdgeInsets.all(15),
+                      child: Text(
+                        textoBotao(),
+                        style: TextStyle(
+                            fontSize: 20
+                        ),
+                      ),
+                      onPressed: (){
+                        _validarCampos(solicitarPedido);
+                      },
+                    ),
+                  ),
+
+
+                ],
+              ),
+
             )
-        );
+        )
+    );
   }
 
   textoBotao(){
     if(solicitarPedido.status == StatusPedido.ENVIADO){
       this.statusAlterado = 'Em Produção';
-      return "Iniciar Produção.";
+      return "Iniciar Produção";
     }else{
       this.statusAlterado = 'FINALIZADO';
-      return "Finalizar Produção.";
+      return "Finalizar Produção";
     }
   }
 

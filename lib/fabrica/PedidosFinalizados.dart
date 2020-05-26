@@ -5,11 +5,7 @@ import 'package:tintex/model/SolicitarPedido.dart';
 import 'package:tintex/model/Usuario.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/intl.dart';
-import 'package:tintex/AtualizarPedido.dart';
 import 'package:tintex/model/Pedido.dart';
-import 'package:tintex/DetalharPedido.dart';
 import 'package:tintex/util/StatusPedido.dart';
 
 import 'AtualizarPedidoFabrica.dart';
@@ -64,7 +60,9 @@ class _PedidosFinalizadosState extends State<PedidosFinalizados> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
+    return Scaffold(
+          backgroundColor: Colors.green,
+    body: StreamBuilder<QuerySnapshot>(
       stream: _controller.stream,
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
@@ -88,112 +86,114 @@ class _PedidosFinalizadosState extends State<PedidosFinalizados> {
               if (querySnapshot.documents.length == 0) {
                 return Center(
                   child: Text(
-                    "Você não possui pedido(s) cadastrado(s).",
+                    "Não existe(m) pedido(s) Finalizado(s).",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 );
               } //chave do IF
 
               return  ListView.builder(
-                      itemCount: querySnapshot.documents.length,
-                      itemBuilder: (context, index) {
-                        List<DocumentSnapshot> pedidos =
-                            querySnapshot.documents.toList();
-                        DocumentSnapshot item = pedidos[index];
+                  itemCount: querySnapshot.documents.length,
+                  itemBuilder: (context, index) {
+                    List<DocumentSnapshot> pedidos =
+                    querySnapshot.documents.toList();
+                    DocumentSnapshot item = pedidos[index];
 
-                        SolicitarPedido solicitarPedido = new SolicitarPedido();
-                        solicitarPedido.Massa_PVA           = item['massa_pva'];
-                        solicitarPedido.Massa_Acrilica      = item['massa_acrilica'];
-                        solicitarPedido.Selador_Acrilico    = item['selador_acrilico'];
-                        solicitarPedido.Latex_Economico     = item['latex_economico'];
-                        solicitarPedido.Grafiato_Acrilico   = item['grafiato_acrilico'];
-                        solicitarPedido.Textura_Acrilica    = item['textura_acrilica'];
-                        solicitarPedido.apresentarRegistro  = item['apresentar_registro'];
-                        solicitarPedido.data_pedido         = item['data_pedido'];
-                        solicitarPedido.data_atualizacao    = item['data_atualizacao'];
-                        solicitarPedido.numero_Pedido       = item['numero_pedido'];
-                        solicitarPedido.status              = item['status'];
-                        solicitarPedido.id                  = item.documentID;
+                    SolicitarPedido solicitarPedido = new SolicitarPedido();
+                    solicitarPedido.Massa_PVA           = item['massa_pva'];
+                    solicitarPedido.Massa_Acrilica      = item['massa_acrilica'];
+                    solicitarPedido.Selador_Acrilico    = item['selador_acrilico'];
+                    solicitarPedido.Latex_Economico     = item['latex_economico'];
+                    solicitarPedido.Grafiato_Acrilico   = item['grafiato_acrilico'];
+                    solicitarPedido.Textura_Acrilica    = item['textura_acrilica'];
+                    solicitarPedido.apresentarRegistro  = item['apresentar_registro'];
+                    solicitarPedido.data_pedido         = item['data_pedido'];
+                    solicitarPedido.data_atualizacao    = item['data_atualizacao'];
+                    solicitarPedido.numero_Pedido       = item['numero_pedido'];
+                    solicitarPedido.status              = item['status'];
+                    solicitarPedido.qtd_total_itens     = item['qtd_total_itens'];
+                    solicitarPedido.valor_total         = item['valor_total'];
+                    solicitarPedido.id                  = item.documentID;
+                    String nome                         = item['cliente']['nome'];
 
+                    String statusLegivel;
+                    if(solicitarPedido.status == StatusPedido.ENVIADO)
+                      statusLegivel = 'Enviado';
+                    else if(solicitarPedido.status == StatusPedido.PRODUCAO)
+                      statusLegivel = 'Em Produção';
+                    else if(solicitarPedido.status == StatusPedido.FINALIZADO)
+                      statusLegivel = 'Finalizado';
 
+                    return  Card(
+                      child: ListTile(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) =>
+                                  DetalharPedidoFabrica(solicitarPedido)));
+                        },
+                        title: Text("${nome} "),
+                        subtitle: Text(
+                            'Status:  ${statusLegivel} - Solicitação: ${solicitarPedido.data_pedido}'),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        AtualizarPedidoFabrica(solicitarPedido, idUsuarioLogado)));
 
-
-
-                        return  Card(
-                          child: ListTile(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) =>
-                                      DetalharPedidoFabrica(solicitarPedido)));
-                            },
-                            title: Text("Pedido número ${solicitarPedido.numero_Pedido} - " + "Data: " + solicitarPedido.data_pedido),
-                            subtitle: Text(
-                                '${(solicitarPedido.Grafiato_Acrilico)} - ${solicitarPedido.Massa_PVA}'),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context).push(MaterialPageRoute(
-                                        builder: (context) =>
-                                            AtualizarPedidoFabrica(solicitarPedido, solicitarPedido.id, idUsuarioLogado)));
-
-                                  },
-                                  child: Padding(
-                                    padding: EdgeInsets.only(right: 0),
-                                    child: Icon(
-                                      Icons.edit,
-                                      color: Colors.green,
-                                    ),
-                                  ),
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(right: 0),
+                                child: Icon(
+                                  Icons.edit,
+                                  color: Colors.green,
                                 ),
-                                GestureDetector(
-                                  onTap: () {
-                                    _showDialog(idUsuarioLogado, solicitarPedido.id);
-                                  },
-                                  child: Padding(
-                                    padding: EdgeInsets.only(right: 0),
-                                    child: Icon(
-                                      Icons.delete_forever,
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                )
-                              ],
+                              ),
                             ),
-                          ),
-                        );
-                      });
+
+                            GestureDetector(
+                              onTap: () {
+                                _showError(
+                                    solicitarPedido.numero_Pedido);
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(right: 0),
+                                child: Icon(
+                                  Icons.delete_forever,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  });
 
 
             }
         }
       },
+    ),
+
     );
 
   }
 
-
-  void _showDialog(idUsuarioLogado, idPedido) {
+  void _showError(numero_Pedido) {
     // flutter defined function
     showDialog(
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: new Text("Deseja realmente excluir o pedido?"),
+          title: new Text("Seu pedido já se encontra em Produção ou Finalizado, não é possível deletá-lo."),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new FlatButton(
-              child: new Text("Sim"),
-              onPressed: (){
-                _removerPedido(idUsuarioLogado, idPedido);
-                Navigator.of(context).pop();
-              },
-
-            ),
-            new FlatButton(
-              child: new Text("Cancelar"),
+              child: new Text("Ok"),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -205,31 +205,7 @@ class _PedidosFinalizadosState extends State<PedidosFinalizados> {
     );
   }
 
-  void _removerPedido(String idUsuarioLogado, String idPedido) {
 
-    String Massa_PVA          = '';
-    String Massa_Acrilica     = '';
-    String Selador_Acrilico   = '';
-    String Latex_Economico    = '';
-    String Grafiato_Acrilico  = '';
-    String Textura_Acrilica   = '';
-    String apresentarRegistro = '';
-
-    //criando objeto Pedido
-    Pedido pedido = Pedido(
-        Massa_Acrilica,
-        Selador_Acrilico,
-        Massa_PVA,
-        Textura_Acrilica,
-        Latex_Economico,
-        Grafiato_Acrilico,
-        apresentarRegistro);
-
-
-    pedido.excluirPedido(idUsuarioLogado, idPedido);
-
-
-  }
 
 
 

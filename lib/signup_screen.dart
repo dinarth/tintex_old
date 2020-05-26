@@ -1,3 +1,6 @@
+import 'package:brasil_fields/formatter/cnpj_input_formatter.dart';
+import 'package:brasil_fields/formatter/telefone_input_formatter.dart';
+import 'package:flutter/services.dart';
 import 'package:tintex/Home.dart';
 import 'package:tintex/model/Usuario.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +17,8 @@ class _SignupScreenState extends State<SignupScreen> {
   final _emailController    = TextEditingController();
   final _passController     = TextEditingController();
   final _adressController   = TextEditingController();
+  final _cnpjController     = TextEditingController();
+  final _telefoneController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -39,13 +44,55 @@ class _SignupScreenState extends State<SignupScreen> {
                   TextFormField(
                       controller: _nameController,
                       decoration: InputDecoration(
-                          hintText: "Nome Completo"
+                          hintText: "Nome Fantasia"
                       ),
                       validator: (text){
                         if(text.isEmpty)
-                          return "Nome inválido.";
+                          return "Nome Fantasia inválido.";
                       }
                   ),
+                  SizedBox(height: 16.0,),
+                  TextFormField(
+                    inputFormatters: [
+                      WhitelistingTextInputFormatter.digitsOnly,
+                      CnpjInputFormatter(),
+                    ],
+                    controller: _cnpjController,
+                    decoration: InputDecoration(
+                        hintText: "CNPJ"
+                    ),
+                    validator: (text){
+                      if(text.isEmpty)
+                        return "CNPJ inválido.";
+                    },
+                  ),
+                  SizedBox(height: 16.0,),
+                  TextFormField(
+                    inputFormatters: [
+                      WhitelistingTextInputFormatter.digitsOnly,
+                      TelefoneInputFormatter(),
+                    ],
+                    controller: _telefoneController,
+                    decoration: InputDecoration(
+                        hintText: "Telefone"
+                    ),
+                    validator: (text){
+                      if(text.isEmpty)
+                        return "Telefone inválido.";
+                    },
+                  ),
+                  SizedBox(height: 16.0,),
+                  TextFormField(
+                    controller: _adressController,
+                    decoration: InputDecoration(
+                        hintText: "Endereço"
+                    ),
+                    validator: (text){
+                      if(text.isEmpty)
+                        return "Endereço inválido.";
+                    },
+                  ),
+
                   SizedBox(height: 16.0,),
                   TextFormField(
                       controller: _emailController,
@@ -67,18 +114,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     obscureText: true,
                     validator: (text){
                       if(text.isEmpty|| text.length < 6)
-                        return "Senha inválida.";
-                    },
-                  ),
-                  SizedBox(height: 16.0,),
-                  TextFormField(
-                    controller: _adressController,
-                    decoration: InputDecoration(
-                        hintText: "Endereço"
-                    ),
-                    validator: (text){
-                      if(text.isEmpty)
-                        return "Endereço inválido.";
+                        return "Senha deve ter pelo menos 6 dígitos.";
                     },
                   ),
 
@@ -97,9 +133,11 @@ class _SignupScreenState extends State<SignupScreen> {
                       onPressed: () {
                         if(_formKey.currentState.validate()){
                           Map<String, dynamic> userData = {
-                            "nome":       _nameController.text,
-                            "email":      _emailController.text,
-                            "endereco":   _adressController.text
+                            "nome"            : _nameController.text,
+                            "cnpj"            : _cnpjController.text,
+                            "telefone"        : _telefoneController.text,
+                            "endereco"        : _adressController.text,
+                            "email"           : _emailController.text
                           };
 
                           model.signUp(
@@ -130,7 +168,7 @@ class _SignupScreenState extends State<SignupScreen> {
     )
     );
     usuario.signInAfter(_emailController.text, _passController.text);
-    Future.delayed(Duration(seconds: 2)).then((_){
+    Future.delayed(Duration(seconds: 0)).then((_){
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => Home()));
     });

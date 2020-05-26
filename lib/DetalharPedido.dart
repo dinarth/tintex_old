@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tintex/MeusPedidos.dart.';
+import 'package:tintex/helper/Formatador.dart';
 import 'package:tintex/model/Pedido.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class DetalharPedido extends StatefulWidget {
 }
 
 class _DetalharPedidoState extends State<DetalharPedido> {
+  Formatador formatador = Formatador();
   final SolicitarPedido solicitarPedido;
   Firestore db = Firestore.instance;
 
@@ -37,10 +39,6 @@ class _DetalharPedidoState extends State<DetalharPedido> {
   double _width = 40.0;
 
   _DetalharPedidoState(this.solicitarPedido);
-
-
-
-
 
 
   @override
@@ -68,11 +66,6 @@ class _DetalharPedidoState extends State<DetalharPedido> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Text(
-                    "Confirmação da atualização do Pedido",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(fontWeight: FontWeight.w500),
-                  ),
                   SizedBox(
                     height: 12.0,
                   ),
@@ -80,7 +73,7 @@ class _DetalharPedidoState extends State<DetalharPedido> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
 
-                      Text("Valor total do pedido: R\$ ${solicitarPedido.valor_total}"),
+                      Text("Valor total do pedido: R\$ ${formatador.currencyConverse(solicitarPedido.valor_total)}"),
                       Text(""),
                       Text("QTD"),
                     ],

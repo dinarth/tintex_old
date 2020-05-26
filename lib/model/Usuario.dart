@@ -3,8 +3,17 @@ import 'package:tintex/Home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:tintex/login_screen.dart';
 
 class Usuario extends Model {
+  String _nome;
+  String _cnpj;
+  String _telefone;
+  String _endereco;
+  String _email;
+
+
+
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   Home loginScreen = new Home();
@@ -88,23 +97,20 @@ class Usuario extends Model {
       await _loadCurrentUser();
 
       onSuccess();
-      isLoading = false;
-      notifyListeners();
-
     }).catchError((e) {
       onFail();
       isLoading = false;
       notifyListeners();
     });
 
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(Duration(microseconds: 100));
 
     isLoading = false;
     notifyListeners();
   }
 
-  void recoverPass() {
-    signUp(userData: null, pass: null, onSuccess: null, onFail: null);
+  void recoverPass(String email) {
+    _auth.sendPasswordResetEmail(email: email);
   }
 
   bool isLoggedIn() {
@@ -112,7 +118,6 @@ class Usuario extends Model {
       return false;
     else
       return true;
-
   }
 
   void signOut() async {
@@ -121,6 +126,7 @@ class Usuario extends Model {
     this.userData.clear();
     firebaseUser = null;
 
+    this.isLoggedIn();
     notifyListeners();
   }
 
@@ -153,6 +159,56 @@ class Usuario extends Model {
     return uid;
   }
 
+  void atualizarDadosUsuario(Usuario usuario, idUsuario){
+    Firestore db = Firestore.instance;
+    db.collection("usuarios")
+             .document(idUsuario)
+             .updateData(updateMap(usuario));
+
+  }
+
+  Map<String, dynamic> updateMap(Usuario usuario){
+    Map<String, dynamic> map = {
+      'nome'      : usuario.nome,
+      'cnpj'      : usuario.cnpj,
+      'telefone'  : usuario.telefone,
+      'endereco'  : usuario.endereco
+  };
+
+    return map;
+
+  }
+
+  String get cnpj => _cnpj;
+
+  set cnpj(String value) {
+    _cnpj = value;
+  }
+
+  String get telefone => _telefone;
+
+  set telefone(String value) {
+    _telefone = value;
+  }
+
+  String get endereco => _endereco;
+
+  set endereco(String value) {
+    _endereco = value;
+  }
+
+  String get email => _email;
+
+  set email(String value) {
+    _email = value;
+  }
+
+  String get nome => _nome;
+
+  set nome(String value) {
+    _nome = value;
+  }
 
 
 }
+

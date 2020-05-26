@@ -1,3 +1,4 @@
+import 'package:tintex/MinhaConta.dart';
 import 'package:tintex/login_screen.dart';
 import 'package:tintex/model/Usuario.dart';
 import 'package:tintex/widget/custom_drawer.dart';
@@ -63,12 +64,18 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
             ),
             Scaffold(
+
+              drawer: CustomDrawer(_pageController),
+              body: RealizarPedido() ,
+
+            ),
+            Scaffold(
               appBar: AppBar(
-                title: Text('Realizar Pedido'),
+                title: Text('Minha Conta'),
                 centerTitle: true,
               ),
               drawer: CustomDrawer(_pageController),
-              body: RealizarPedido() ,
+              body: MinhaConta() ,
 
             ),
         ],

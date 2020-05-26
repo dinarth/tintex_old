@@ -24,9 +24,10 @@ class ConfirmarPedido extends StatefulWidget {
 }
 
 class _ConfirmarPedidoState extends State<ConfirmarPedido> {
+  Formatador formatador = Formatador();
   final SolicitarPedido solicitarPedido;
+  final Produto produto;
   Firestore db                = Firestore.instance;
-  Produto produto             = new Produto();
   String _valorTotalDoPedido;
   String _qtdTotalPrd;
 
@@ -62,12 +63,7 @@ class _ConfirmarPedidoState extends State<ConfirmarPedido> {
     this.valorTotalDoPedido = formatar.format(valorTotal);
 
     this.qtdTotalPrd = qtdTotalPrd.toString();
-
-
   }
-
-
-
   @override
   void initState() {
     // TODO: implement initState
@@ -79,7 +75,7 @@ class _ConfirmarPedidoState extends State<ConfirmarPedido> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  Scaffold(
         appBar: AppBar(
           centerTitle: true,
           title: Text("Confirmar Pedido"),
@@ -91,7 +87,7 @@ class _ConfirmarPedidoState extends State<ConfirmarPedido> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Text(
-                    "Confirmação da atualização do Pedido",
+                    "Confirmação do Pedido",
                     textAlign: TextAlign.start,
                     style: TextStyle(fontWeight: FontWeight.w500),
                   ),
@@ -102,7 +98,7 @@ class _ConfirmarPedidoState extends State<ConfirmarPedido> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
 
-                      Text("Valor total do pedido: R\$ ${valorTotalDoPedido.toString()}"),
+                      Text("Valor total do pedido: R\$ ${formatador.currencyConverse(valorTotalDoPedido.toString())}"),
                       Text(""),
                       Text("QTD"),
                     ],
@@ -187,7 +183,7 @@ class _ConfirmarPedidoState extends State<ConfirmarPedido> {
                         height: _heigth,
                         width: _width,
                       ),
-                      Text("Latex Econômico: ", textAlign: TextAlign.right,),
+                      Text("Massa PVA: ", textAlign: TextAlign.right,),
                       Text("${solicitarPedido.Massa_PVA}")
                     ],
                   ),
@@ -226,7 +222,8 @@ class _ConfirmarPedidoState extends State<ConfirmarPedido> {
 
             )
         )
-        );
+
+    );
   }
 
 
@@ -244,10 +241,6 @@ class _ConfirmarPedidoState extends State<ConfirmarPedido> {
     Formatador formatador = new Formatador();
 
     String dataPedido   = formatador.formatarData(dateTimeNow);
-
-
-
-
 
     ////////////////////Novo cadastro de pedido//////////////////
 
@@ -339,4 +332,6 @@ class _ConfirmarPedidoState extends State<ConfirmarPedido> {
   set valorTotalDoPedido(String value) {
     _valorTotalDoPedido = value;
   }
+
+
 }

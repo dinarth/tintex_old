@@ -20,7 +20,6 @@ class MeusPedidos extends StatefulWidget {
 
 class _MeusPedidosState extends State<MeusPedidos> {
   Usuario usuario = new Usuario();
-  List<Pedido> _pedidos = List();
   final _controller = StreamController<QuerySnapshot>.broadcast();
   Firestore db = Firestore.instance;
   Future<String> idUsuario;
@@ -88,12 +87,26 @@ class _MeusPedidosState extends State<MeusPedidos> {
             } else {
               QuerySnapshot querySnapshot = snapshot.data;
               if (querySnapshot.documents.length == 0) {
-                return Center(
+                return Scaffold(
+                  body: Center(
                   child: Text(
                     "Você não possui pedido(s) cadastrado(s).",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+
                   ),
+
+                ),
+                  floatingActionButton: FloatingActionButton(
+                    onPressed: (){
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) =>  RealizarPedido()));
+                    },
+                    child: Icon(Icons.add),
+                  ),
+
                 );
+
+
               } //chave do IF
 
               return  ListView.builder(
